@@ -1,11 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Java Pitfalls</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
 </head>
 
 <body>
-Text
+<div class="sidebar">
+    <div class="sidebar__logo">
+        <img src="images/jp11-logo.png" alt="Image">
+    </div>
+    <nav class="sidebar__navigation">
+        <ul class="sidebar__navigation__list">
+            <li class="sidebar__navigation__item">Java Fundamentals</li>
+            <li class="sidebar__navigation__item">Annotations</li>
+            <li class="sidebar__navigation__item">Functional programming</li>
+            <li class="sidebar__navigation__item">Exceptions, assertions, localization</li>
+            <li class="sidebar__navigation__item">Modular applications</li>
+            <li class="sidebar__navigation__item">Concurrency</li>
+            <li class="sidebar__navigation__item">I/O</li>
+            <li class="sidebar__navigation__item">NIO.2</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="content-container">
+    <header class="header">
+        <nav class="header__menu">
+            <div class="header__menu__item header__menu__input-field">
+                <input type="text" placeholder="🔍 Найти">
+            </div>
+            <ul class="header__menu__list">
+                <li class="header__menu__item">🏠 Домой</li>
+                <li class="header__menu__item">📰 Статьи</li>
+                <li class="header__menu__item">☎ Контакты</li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1 class="content__header">lab-1</h1>
+
+        <section class="content__grid-section">
+
+            <section class="content__section">
+                <h1 class="content__section__header">🔵 Цитата</h1>
+                <q>
+                    His Judgement Cometh and that Right Soon...
+                </q>
+            </section>
+
+            <section class="content__section">
+                <h1 class="content__section__header">🔴 Формула</h1>
+                <p>
+                    H<sub>2</sub>SO<sub>4</sub> + NaOH = Na<sub>2</sub>SO<sub>4</sub> + H<sub>2</sub>O
+                </p>
+            </section>
+
+            <section class="content__section">
+                <h1 class="content__section__header">🔴 ASCII Art</h1>
+                <pre>
+                    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡇⠀⠀⠀⠀⠀⠀⠀
+                    ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣾⠟⠀⣀⣠⠄⠀⠀⠀⠀
+                    ⠀⠀⠀⠀⠀⠀⢠⣶⣿⠟⠁⢠⣾⠋⠁⠀
+                    ⠀⠀⠀⠀⠀⠀⠹⣿⡇⠀⠀⠸⣿⡄⠀⠀
+                    ⠀⠀⠀⠀⠀⠀⠀⠙⠷⡀⠀⠀⢹⠗⠀⠀⠀⠀⠀⠀
+                    ⠀⠀⢀⣤⣴⡖⠒⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠒⢶⣄
+                    ⠀⠀⠈⠙⢛⣻⠿⠿⠿⠟⠛⠛⠛⠋⠉⠀⠀⠀⣸⡿
+                    ⠀⠀⠀⠀⠛⠿⣷⣶⣶⣶⣶⣾⠿⠗⠂⠀⢀⠴⠛⠁
+                    ⠀⠀⠀⠀⠀⢰⣿⣦⣤⣤⣤⣴⣶⣶⠄⠀⠀⠀⠀⠀
+                    ⣀⣤⡤⠄⠀⠀⠈⠉⠉⠉⠉⠉⠀⠀⠀⠀⢀⡀⠀⠀
+                    ⠻⣿⣦⣄⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣠⣴⠾⠃⠀⢀
+                    ⠀⠀⠈⠉⠛⠛⠛⠛⠛⠛⠛⠛⠋⠉⠁⠀⣀⣤⡶⠋
+                    ⠀⠀⠀⠀⠐⠒⠀⠠⠤⠤⠤⠶⠶⠚⠛⠛⠉⠀⠀⠀
+                </pre>
+            </section>
+
+            <section class="content__section">
+                <h1 class="content__section__header">🔵 Code Snippet</h1>
+                <pre class="content__section__code">
+public class D {
+    public static void main(String ... a) {
+        System.exit(-12);
+    }
+}
+                </pre>
+            </section>
+
+
+        </section>
+
+        <h1 class="content__header">lab-2</h1>
+        <section class="content__section">
+            <h1 class="content__section__header">🔵 Текст</h1>
+            <p class="text-paragraph">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquam, aliquid asperiores cum, dolorum
+                eaque earum eligendi esse exercitationem fugit, id impedit ipsa magni minus omnis porro quasi quis
+                tenetur? Animi aspernatur autem blanditiis cumque exercitationem magnam nemo obcaecati officiis
+                perferendis possimus quae quas quibusdam rerum sed, sit! Adipisci, aliquam aliquid aut, cumque eligendi
+                ipsa laudantium maxime officiis quos sapiente sequi soluta veniam. Delectus deserunt ex obcaecati odio
+                quae qui quo rem, velit voluptatibus. Adipisci atque dignissimos itaque maxime necessitatibus officiis
+                pariatur praesentium quasi qui quis, ratione reiciendis. A accusamus ad adipisci architecto aspernatur
+                consequatur cumque cupiditate eaque eius ex illo in molestias nobis odit, officia placeat quasi. Culpa
+                doloremque eaque molestiae, omnis repudiandae voluptate. Animi commodi corporis culpa deleniti
+                dignissimos distinctio dolor doloribus earum, expedita ipsam maxime molestiae molestias, mollitia nobis
+                numquam odit, omnis possimus quidem repudiandae similique! Animi beatae blanditiis commodi, consectetur
+                consequuntur cumque dignissimos doloribus, eos error exercitationem fuga hic iste iure iusto magnam modi
+                molestiae nihil nisi nostrum omnis provident quam repellendus sequi similique tempora temporibus totam
+                unde vel veritatis voluptatum. Autem beatae cumque cupiditate deleniti dicta, dolore doloremque harum
+                hic, ipsam libero nam repellendus, sapiente sint tempora tenetur? Accusantium, amet consequatur ipsa
+                quis recusandae voluptatibus.
+            </p>
+        </section>
+
+
+    </main>
+
+    <footer>
+        2022-2022 &copy; by mullerdaniil
+    </footer>
+</div>
+
 </body>
 </html>
