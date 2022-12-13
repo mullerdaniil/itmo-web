@@ -1,0 +1,35 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    font-size: 28px;
+}
+
+.form__input {
+    background-color: #292857;
+    margin: 10px 0 50px 0;
+    border: none;
+    font-size: 28px;
+    color: var(--text-color-active);
+    border-radius: 5px;
+}
+
+.form__submit {
+    background-color: #292857;
+    border: none;
+    border-radius: 8px;
+    font-size: 22px;
+    height: 38px;
+    color: var(--text-color-active);
+}
+
+.notes-delete__button {
+    background-color: #292857;
+    border: none;
+    border-radius: 8px;
+    font-size: 22px;
+    height: 38px;
+    color: var(--text-color-active);
+    margin-top: 20px;
+    width: 50%;
+}

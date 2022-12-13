@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Notes</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/text.css">
+  <link rel="stylesheet" href="styles/images.css">
+  <link rel="stylesheet" href="styles/tables.css">
+  <link rel="stylesheet" href="styles/form.css">
+  <script src="scripts/page-load-time.js"></script>
+</head>
+
+<body>
+<script src="scripts/load-page-template.js"></script>
+
+<div class="sidebar">
+</div>
+
+<div class="content-container">
+  <header class="header">
+  </header>
+
+  <main class="content">
+    <h1 class="content__header">Make a note</h1>
+    <section class="content__section">
+
+      <form class="form" id="notes-form">
+        <label class="form__label" for="note-name">Название</label>
+        <input class="form__input" id="note-name" type="text" name="note-name">
+
+        <label class="form__label" for="note-text">Текст</label>
+        <textarea class="form__input" id="note-text" name="note-text" rows="4"></textarea>
+<!--        <input class="form__input" id="note-text" type="text" rows="5" name="note-text">-->
+
+        <input class="form__submit" type="submit" value="Сохранить">
+      </form>
+
+      <input class="notes-delete__button" type="submit" value="Удалить все" onclick="clearNotes();">
+    </section>
+
+
+
+    <h1 class="content__header">Notes</h1>
+    <section class="content__grid-section" id="notes-section">
+
+    </section>
+
+  </main>
+
+  <footer>
+  </footer>
+</div>
+
+<script src="scripts/set-active-links.js"></script>
+<script src="scripts/handle-form.js"></script>
+</body>
+</html>

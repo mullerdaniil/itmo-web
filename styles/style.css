@@ -1,36 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap');
 
 :root {
-    /*strict #1*/
-    /*--background-color: #131217;*/
-    /*--panel-color: #191B1F;*/
-    /*--panel-border-color: #2C2C30;*/
-    /*--line-color: lightgray;*/
-    /*--text-color-inactive: #A0A2A6;*/
-    /*--text-color-active: #F3F2F6;*/
-    /*--sidebar-navigation-item-background-color: #1D1C23;*/
-    /*--sidebar-navigation-item-active-border-color: lime;*/
-    /*--header-background-color: #080808;*/
-    /*--input-field-background-color: #212225;*/
-    /*--content-section-background-color: #0D0C0F;*/
-    /*--content-section-background-color-active: var(--content-section-background-color);*/
-
-
-    /*medium clown*/
-    /*--background-color: #13192C;*/
-    /*--panel-color: #181E30;*/
-    /*--panel-border-color: var(--panel-color);*/
-    /*--line-color: lightgray;*/
-    /*--text-color-inactive: #C0C2C6;*/
-    /*--text-color-active: #F3F2F6;*/
-    /*--sidebar-navigation-item-background-color: #15242E;*/
-    /*--sidebar-navigation-item-active-border-color: lime;*/
-    /*--header-background-color: var(--panel-color);*/
-    /*--input-field-background-color: var(--panel-color);*/
-    /*--content-section-background-color: var(--background-color);*/
-    /*--content-section-background-color-active: var(--content-section-background-color);*/
-
-
     /*clown*/
     --background-color: #1B1A43;
     --panel-color: #141432;
@@ -171,12 +141,11 @@ body {
     flex-direction: column;
     justify-content: center;
     font-size: 22px;
-    min-width: 110px;
-    padding: 5px 40px 5px 0;
+    padding: 5px 12px;
 }
 
 .header__menu__item_active {
-    color: #3AB700;
+    border-bottom: 2px solid cyan;
 }
 
 .header__menu__item:hover {
