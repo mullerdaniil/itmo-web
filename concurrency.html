@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Concurrency</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
+    <link rel="stylesheet" href="styles/images.css">
+    <link rel="stylesheet" href="styles/chapters.css">
+    <script src="scripts/page-load-time.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar__logo">
+        <img src="images/jp11-logo.png" alt="Logo">
+    </div>
+    <nav class="sidebar__navigation">
+        <ul class="sidebar__navigation__list">
+            <li class="sidebar__navigation__item"><a href="java-fundamentals.html">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="annotations.html">Annotations</a></li>
+            <li class="sidebar__navigation__item"><a href="generics-and-collections.html">Generics and collections</a></li>
+            <li class="sidebar__navigation__item"><a href="functional-programming.html">Functional programming</a></li>
+            <li class="sidebar__navigation__item"><a href="exceptions-assertions-localization.html">Exceptions, assertions, localization</a></li>
+            <li class="sidebar__navigation__item"><a href="modular-applications.html">Modular applications</a></li>
+            <li class="sidebar__navigation__item"><a href="concurrency.html">Concurrency</a></li>
+            <li class="sidebar__navigation__item"><a href="io.html">I/O</a></li>
+            <li class="sidebar__navigation__item"><a href="nio-2.html">NIO.2</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="content-container">
+    <header class="header">
+        <nav class="header__menu">
+            <div class="header__menu__item header__menu__input-field">
+                <input type="text" placeholder="🔍 Найти">
+            </div>
+            <ul class="header__menu__list">
+                <li class="header__menu__item full-text"><a href="index.html">🏠 Домой</a></li>
+                <li class="header__menu__item short-text"><a href="index.html">🏠</a></li>
+                <li class="header__menu__item full-text"><a href="articles.html">📰 Статьи</a></li>
+                <li class="header__menu__item short-text"><a href="articles.html">📰</a></li>
+                <li class="header__menu__item full-text"><a href="contacts.html">☎ Контакты</a></li>
+                <li class="header__menu__item short-text"><a href="contacts.html">☎</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1>Chapter 7. Concurrency</h1>
+        <h2>Потоки</h2>
+        <ul>
+            <li>
+                <p>поток (thread) - наименьшая единица выполнения, которая может быть запланирована операционной системой. Процесс - группа связанных потоков, которые выполняются в одной shared среде. Single-threaded процесс - процесс, имеющий ровно один поток. Multithreaded процесс может содержать один или более потоков.</p>
+            </li>
+            <li>
+                <p>shared среда означает, что потоки в одном процессе делят одну память и могут напрямую общаться друг с другом.</p>
+            </li>
+            <li>
+                <p>task - единица работы, выполняемой потоком. Поток может выполнить несколько независимых tasks, но только одну task одновременно.</p>
+            </li>
+            <li>
+                <p>системный поток создается JVM и выполняется на фоне приложения. Обычно выполнения системных потоков не видно разработчику приложения. Когда поток сталкивается с проблемой, то генерирует <code>Error</code>.</p>
+            </li>
+            <li>
+                <p>операционные системы используют thread scheduler для того, чтобы определять, какие потоки должны исполняться сейчас. Context switch (переключение) - процесс сохранения текущего состояния потока и последующего восстановления состояния вместе с возобновлением его выполнения.</p>
+            </li>
+            <li>
+                <p>потоки иметь приоритет (thread priority) - целочисленное значение, определяющее приоритет выполнения потока, определяемый thread scheduler.</p>
+            </li>
+            <li>
+                <p>интерфейс <code>Runnable</code> используется для определения задачи, которую поток будет выполнять:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">@FunctionalInterface
+public interface Runnable {
+ void run();
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>в силу того, что <code>Runnable</code> - функциональный интерфейс, реализация может быть как в виде лямбды, так и в виде класса. Второй вариант используется для передачи параметров через конструктор.</p>
+            </li>
+            <li>
+                <p>определить task, которую поток будет выполнять, можно способами:</p>
+                <ul>
+                    <li>передать <code>Runnable</code> в конструктор <code>Thread</code>
+                    </li>
+                    <li>создать класс, расширяющий <code>Thread</code> и переопределить <code>run()</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>поток запускается с помощью метода <code>start()</code> (но не <code>run()</code>). При этом порядок выполнения нескольких потоков нельзя определить наверняка.</p>
+            </li>
+            <li>
+                <p>с помощью Concurrency API можно создать объект <code>ExecutorService</code>, позволяющий выполнять tasks:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">Runnable task = () -&gt; System.out.println(&quot;Do the task&quot;);
+ExecutorService service = null;
+try {
+    service = Executors.newSingleThreadExecutor();
+    service.execute(task);
+    service.execute(task);
+} finally {
+    if (service != null) {
+        service.shutdown();
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>метод <code>shutdown()</code> отклоняет новые задачи для выполнения, при этом оставшие задачи продолжают выполняться. На этом этапе <code>isShutdown()</code> возвращает <code>true</code>, а <code>isTerminated()</code> - <code>false</code>. При отправке новой задачи будет выброшено <code>RejectedExecutionException</code>. Как только все задачи выполнятся, <code>isShutdown()</code> и <code>isTerminated()</code> будут возвращать <code>true</code>.</p>
+            </li>
+            <li>
+                <p>метод <code>shutdownNow()</code> пытается остановить все выполняющиеся и еще не начатые задачи, а также возвращается <code>List&lt;Runnable&gt;</code> - список еще не начатых задач.</p>
+            </li>
+            <li>
+                <p>существует несколько методов запуска задач:</p>
+            </li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Метод</th>
+                <th>Описание</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>void execute(Runnable command) </code></td>
+                <td><code>Runnable</code> выполняется к какому-либо моменту времени</td>
+            </tr>
+            <tr>
+                <td><code>Future&lt;?&gt; submit(Runnable task) </code></td>
+                <td><code>Runnable</code> выполняется к какому-либо моменту времени, возвращается <code>Future</code>, содержащий результат выполнения</td>
+            </tr>
+            <tr>
+                <td><code>&lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; task)</code></td>
+                <td><code>Callable</code> выполняется к какому-либо моменту времени, возвращается <code>Future</code>, содержащий результат выполнения</td>
+            </tr>
+            <tr>
+                <td><code>&lt;T&gt; List&lt;Future&lt;T&gt;&gt; invokeAll(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks)throws InterruptedException</code></td>
+                <td>Выполняются все задачи, ожидается завершение выполнения всех задач. Возвращается список <code>Future</code> в том же порядке</td>
+            </tr>
+            <tr>
+                <td><code>&lt;T&gt; T invokeAny(Collection&lt;? extendsCallable&lt;T&gt;&gt; tasks) throwsInterruptedException,ExecutionException</code></td>
+                <td>Выполняются все задачи, ожидается завершение выполнения хотя бы одной задачи. Возвращается <code>Future</code> для завершенной задачи и отменяются все незавершенные задачи</td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>
+                <p>в отличие от <code>execute()</code>, <code>submit()</code> возвращает результат выполнения (<code>Future</code>), а также позволяет использовать <code>Callable</code>.</p>
+            </li>
+            <li>
+                <p>методы у <code>Future</code>:</p>
+                <ul>
+                    <li>
+                        <code>boolean isDone()</code>
+                    </li>
+                    <li>
+                        <code>boolean isCancelled() </code>
+                    </li>
+                    <li>
+                        <code>boolean cancel(boolean mayInterruptIfRunning)</code>
+                    </li>
+                    <li>
+                        <code>V get()</code>
+                    </li>
+                    <li>
+                        <code>V get(long timeout, TimeUnit unit)</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>значения <code>TimeUnit</code>:</p>
+                <ul>
+                    <li>
+                        <code>TimeUnit.NANOSECONDS</code>
+                    </li>
+                    <li>
+                        <code>TimeUnit.MICROSECONDS</code>
+                    </li>
+                    <li>
+                        <code>TimeUnit.MILLISECONDS</code>
+                    </li>
+                    <li>
+                        <code>TimeUnit.SECONDS</code>
+                    </li>
+                    <li>
+                        <code>TimeUnit.MINUTES</code>
+                    </li>
+                    <li>
+                        <code>TimeUnit.HOURS</code>
+                    </li>
+                    <li>
+                        <code>TimeUnit.DAYS</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>интерфейс <code>Callable</code> похож на <code>Runnable</code>, однако его метод возвращает значение:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">@FunctionalInterface public interface Callable&lt;V&gt; {
+    V call() throws Exception;
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>метод <code>awaitTermination()</code> ждет определенное время до завершения всех задач. Возвращает <code>true</code>, если все задачи выполнились. Если <code>awaitTermination()</code> вызывается до <code>shutdown()</code>, то поток будет ждать полное время, переданное в <code>shutdown()</code>.</p>
+            </li>
+            <li>
+                <p>с помощью <code>ScheduledExecutorService</code> можно планировать выполнение задач:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">ScheduledExecutorService service
+ = Executors.newSingleThreadScheduledExecutor();
+</code></pre>
+        <ul>
+            <li>
+                <p>методы <code>ScheduledExecutorService</code> (все возвращают <code>ScheduledFuture</code>):</p>
+                <ul>
+                    <li>
+                        <code>schedule(Callable&lt;V&gt; callable, long delay, TimeUnit unit)</code>
+                    </li>
+                    <li>
+                        <code>schedule(Runnable command, long delay, TimeUnit unit)</code>
+                    </li>
+                    <li>
+                        <code>scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit)</code>
+                    </li>
+                    <li>
+                        <code>scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit)</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>thread-pool - это группа pre-instantiated переиспользуемых потоков. Фабричные методы <code>Executors</code> для создания потоков:</p>
+            </li>
+            <li>
+                <p><code>ExecutorService newSingleThreadExecutor()</code></p>
+            </li>
+            <li>
+                <p><code>ScheduledExecutorService newSingleThreadScheduledExecutor()</code></p>
+            </li>
+            <li>
+                <p><code>ExecutorService newCachedThreadPool()</code></p>
+            </li>
+            <li>
+                <p><code>ExecutorService newFixedThreadPool(int)</code></p>
+            </li>
+            <li>
+                <p><code>ScheduledExecutorService newScheduledThreadPool(int)</code></p>
+            </li>
+            <li>
+                <p>по сути, <code>newFixedThreadPool(1)</code> эквивалентен <code>newSingleThreadExecutor()</code>. <code>newCachedThreadPool()</code> создает пул неограниченного размера, при этом создавая новый поток при необходимости.</p>
+            </li>
+        </ul>
+        <h2>Потокобезопасность</h2>
+        <ul>
+            <li>
+                <p>потокобезопасность - свойство объекта, которое гарантирует безопасное выполнение несколькими потоками одновременно.</p>
+            </li>
+            <li>
+                <p>оператор <code>++</code> (pre-increment) не является потокобезопасным., потому что эта операция не является атомарной, а делится на две задачи - прочитать и записать, что могут прервать другие потоки. Атомарность - свойство операции быть неделимой единицей выполнения, не быть прерванной другими потоками.</p>
+            </li>
+            <li>
+                <p>существуют атомарные классы, эквивалентные обычным примитивам:</p>
+                <ul>
+                    <li>
+                        <code>AtomicBoolean</code>
+                    </li>
+                    <li>
+                        <code>AtomicInteger</code>
+                    </li>
+                    <li>
+                        <code>AtomicLong</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>атомарные методы:</p>
+                <ul>
+                    <li>
+                        <code>get()</code>
+                    </li>
+                    <li>
+                        <code>set()</code>
+                    </li>
+                    <li>
+                        <code>getAndSet()</code>
+                    </li>
+                    <li>
+                        <code>incremenetAndGet()</code>
+                    </li>
+                    <li>
+                        <code>getAndIncrement()</code>
+                    </li>
+                    <li>
+                        <code>decrementAndGet()</code>
+                    </li>
+                    <li>
+                        <code>getAndDecrement()</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>пример использования <code>AtomicInteger</code>:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">private AtomicInteger count = new AtomicInteger(0);
+private void incAndPrint() {
+    System.out.print((count.incrementAndGet()) + &quot; &quot;);
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>в <code>synchronized</code> блок может войти одновременно только один поток. Как только поток завершает выполнения блока, другие потоки могут войти в этот блок.</p>
+            </li>
+            <li>
+                <p>пример с использованием <code>synchronized</code> блока. В данном случае числа выводятся по порядку:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">class Manager {
+    private AtomicInteger count = new AtomicInteger(0);
+    private void incAndPrint() {
+        synchronized (this) {
+            System.out.print((count.incrementAndGet()) + &quot; &quot;);
+        }
+    }
+
+    public static void main(String[] args) {
+        ExecutorService service = null;
+        try {
+            Manager manager = new Manager();
+            service = Executors.newFixedThreadPool(20);
+            for (int i = 0; i &lt; 10; i++) {
+                service.submit(manager::incAndPrint);
+            }
+        } finally {
+            if (service != null) {
+                service.shutdown();
+            }
+        }
+    }
+}
+
+// 1 2 3 4 5 6 7 8 9 10
+</code></pre>
+        <ul>
+            <li>можно использовать <code>synchronized</code> на методе. Две эквивалентные записи:</li>
+        </ul>
+        <pre><code class="language-java">private void incrementAndReport() {
+    synchronized(this) {
+        System.out.print((++sheepCount)+&quot; &quot;);
+    }
+}
+
+private synchronized void incrementAndReport() {
+    System.out.print((++sheepCount)+&quot; &quot;);
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>также <code>synchronized</code> можно использовать на <code>static</code> методах. Тогда монитором будет выступать объект <code>MyClass.class</code>.</p>
+            </li>
+            <li>
+                <p>вместо <code>synchronized</code> можно использовать интерфейс <code>Lock</code>, имеющий методы <code>lock()</code> и <code>unlock()</code>. Пример использования:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">private static Lock lock = new ReentrantLock();
+private AtomicInteger count = new AtomicInteger(0);
+private void incAndPrint() {
+    try {
+        lock.lock();
+        System.out.print((count.incrementAndGet()) + &quot; &quot;);
+    } finally {
+        lock.unlock();
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>хорошая практика, использовать <code>try</code>/<code>finally</code> конструкцию с <code>Lock</code>, чтобы locks правильно освобождались.</p>
+            </li>
+            <li>
+                <p>в случае попытки отпустить неимеющийся у потока lock бросается исключения:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">Lock lock = new ReentrantLock();
+lock.unlock(); // IllegalMonitorStateException
+</code></pre>
+        <ul>
+            <li>методы <code>Lock</code>:</li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Метод</th>
+                <th>Описание</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>void lock()</code></td>
+                <td>Запрашивает lock и блокируется, пока lock не будет получен</td>
+            </tr>
+            <tr>
+                <td><code>void unlock()</code></td>
+                <td>Освождает lock</td>
+            </tr>
+            <tr>
+                <td><code>boolean tryLock()</code></td>
+                <td>Запрашивает lock и сразу возвращает. Возвращает, был ли получен lock</td>
+            </tr>
+            <tr>
+                <td><code>boolean tryLock(long,TimeUnit)</code></td>
+                <td>Запрашивает lock и блокируется на указанное время, пока lock не будет получен. Возвращает, был ли получен lock</td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>пример использования <code>tryLock</code>:</li>
+        </ul>
+        <pre><code class="language-java">Lock lock = new ReentrantLock();
+new Thread(() -&gt; printMessage(lock)).start();
+if (lock.tryLock()) {
+    try {
+        System.out.println(&quot;Lock obtained, entering protected code&quot;);
+    } finally {
+        lock.unlock();
+    }
+} else {
+    System.out.println(&quot;Unable to acquire lock, doing something else&quot;);
+}
+</code></pre>
+        <ul>
+            <li>
+                <code>CyclicBarrier</code> позволяет выполнять задачи по порядку. Он ждет выполнения этапа необходимым количеством потоков, и затем выполнение продолжается. Пример:</li>
+        </ul>
+        <pre><code class="language-java">class Manager {
+    private final int executorsCount;
+    private CyclicBarrier barrier1;
+    private CyclicBarrier barrier2;
+
+    public Manager(int executorsCount) {
+        this.executorsCount = executorsCount;
+        this.barrier1 = new CyclicBarrier(executorsCount);
+        this.barrier2 = new CyclicBarrier(executorsCount, () -&gt; System.out.println(&quot;task #2 finished&quot;));
+    }
+
+    private void doTask1() {
+        System.out.println(&quot;Doing task #1&quot;);
+    }
+
+    private void doTask2() {
+        System.out.println(&quot;Doing task #2&quot;);
+    }
+
+    private void doTask3() {
+        System.out.println(&quot;Doing task #3&quot;);
+    }
+
+    public void doTasks() {
+        try {
+            doTask1();
+            barrier1.await();
+            doTask2();
+            barrier2.await();
+            doTask3();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        ExecutorService service = null;
+        try {
+            int executorsCount = 4;
+
+            service = Executors.newFixedThreadPool(executorsCount);
+            Manager manager = new Manager(executorsCount);
+            for (int i = 0; i &lt; executorsCount; i++) {
+                service.submit(manager::doTasks);
+            }
+        } finally {
+            if (service != null) {
+                service.shutdown();
+            }
+        }
+    }
+}
+
+/*
+Doing task #1
+Doing task #1
+Doing task #1
+Doing task #1
+Doing task #2
+Doing task #2
+Doing task #2
+Doing task #2
+task #2 finished
+Doing task #3
+Doing task #3
+Doing task #3
+Doing task #3
+*/
+</code></pre>
+        <ul>
+            <li>использование nonconcurrent коллекции может повлечь <code>ConcurrentModificationException</code> даже с одним потоком:</li>
+        </ul>
+        <pre><code class="language-java">var foodData = new HashMap&lt;String, Integer&gt;();
+foodData.put(&quot;penguin&quot;, 1);
+foodData.put(&quot;flamingo&quot;, 2);
+for (String key: foodData.keySet())
+    foodData.remove(key);
+</code></pre>
+        <ul>
+            <li>существуют concurrent аналоги коллекций. При их использовании предыдущее исключение не выбрасывается:</li>
+        </ul>
+        <pre><code class="language-java">var foodData = new ConcurrentHashMap&lt;String, Integer&gt;();
+foodData.put(&quot;penguin&quot;, 1);
+foodData.put(&quot;flamingo&quot;, 2);
+for(String key: foodData.keySet())
+    foodData.remove(key);
+</code></pre>
+
+
+
+        <ul>
+            <li>
+                <p>можно выделить 3 проблемы своевременности выполнения программы:</p>
+                <ul>
+                    <li>deadlock (два или более потока блокируются навсегда, ожидая друг друга)</li>
+                    <li>starvation (один поток не может получить доступ к shared ресурсу или lock, постоянно занятый другими потоками)</li>
+                    <li>livelock (два или более потока блокируются, хотя все еще активны и пытаются завершить выполнение)</li>
+                </ul>
+            </li>
+            <li>
+                <p>race condition - ситуация, при которой две задачи, которые должны выполняться последовательно, выполняются одновременно.</p>
+            </li>
+            <li>
+                <p>parallel stream - stream, способный обрабатывать результаты одновременно, используя несколько потоков. Можно создать parallel stream из существующего stream или вызвать метод у коллекции:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">Stream&lt;Integer&gt; s1 = List.of(1,2).stream();
+Stream&lt;Integer&gt; s2 = s1.parallel();
+
+Stream&lt;Integer&gt; s3 = List.of(1,2).parallelStream();
+</code></pre>
+        <ul>
+            <li>
+                <p><code>Stream</code> имеет метод <code>isParallel()</code>, позволяющий проверить, поддерживает ли объект параллельную обработку.</p>
+            </li>
+            <li>
+                <p>parallel decomposition - процесс разбиения задачи на подзадачи, которые могут быть выполнены параллельно, и затем, сборки результатов.</p>
+            </li>
+            <li>
+                <p>есть альтернативная версия <code>forEach()</code> - <code>forEachOrdered()</code>, при которой parallel stream обрабатывает результаты по порядку.</p>
+            </li>
+        </ul>
+
+
+
+
+    </main>
+
+    <footer>
+        <div>Page load time is <span id="page-load-time">###</span> seconds</div>
+        <br/>
+        2022-2022 &copy; by mullerdaniil
+    </footer>
+</div>
+
+<script src="scripts/set-active-links.js"></script>
+</body>
+</html>

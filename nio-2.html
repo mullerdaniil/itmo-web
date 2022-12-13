@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NIO.2</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
+    <link rel="stylesheet" href="styles/images.css">
+    <link rel="stylesheet" href="styles/chapters.css">
+    <script src="scripts/page-load-time.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar__logo">
+        <img src="images/jp11-logo.png" alt="Logo">
+    </div>
+    <nav class="sidebar__navigation">
+        <ul class="sidebar__navigation__list">
+            <li class="sidebar__navigation__item"><a href="java-fundamentals.html">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="annotations.html">Annotations</a></li>
+            <li class="sidebar__navigation__item"><a href="generics-and-collections.html">Generics and collections</a></li>
+            <li class="sidebar__navigation__item"><a href="functional-programming.html">Functional programming</a></li>
+            <li class="sidebar__navigation__item"><a href="exceptions-assertions-localization.html">Exceptions, assertions, localization</a></li>
+            <li class="sidebar__navigation__item"><a href="modular-applications.html">Modular applications</a></li>
+            <li class="sidebar__navigation__item"><a href="concurrency.html">Concurrency</a></li>
+            <li class="sidebar__navigation__item"><a href="io.html">I/O</a></li>
+            <li class="sidebar__navigation__item"><a href="nio-2.html">NIO.2</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="content-container">
+    <header class="header">
+        <nav class="header__menu">
+            <div class="header__menu__item header__menu__input-field">
+                <input type="text" placeholder="🔍 Найти">
+            </div>
+            <ul class="header__menu__list">
+                <li class="header__menu__item full-text"><a href="index.html">🏠 Домой</a></li>
+                <li class="header__menu__item short-text"><a href="index.html">🏠</a></li>
+                <li class="header__menu__item full-text"><a href="articles.html">📰 Статьи</a></li>
+                <li class="header__menu__item short-text"><a href="articles.html">📰</a></li>
+                <li class="header__menu__item full-text"><a href="contacts.html">☎ Контакты</a></li>
+                <li class="header__menu__item short-text"><a href="contacts.html">☎</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1>Chapter 9. NIO.2</h1>
+        <h2>Path</h2>
+        <ul>
+            <li>
+                <p><code>java.nio.file.Path</code> - аналог <code>java.io.File</code>, представляет собой иерархический путь к файлу или директории в файловой системе. В отличие <code>java.io.File</code>, <code>Path</code> поддерживать использование symbolic link (специальный файл в файловой системе, который является на другой файл или папку).</p>
+            </li>
+            <li>
+                <p>получить объект <code>Path</code> можно с помощью фабричного метода:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">// Path factory method
+public static Path of(String first, String… more)
+
+// Examples
+Path path1 = Path.of(&quot;pandas/cuddly.png&quot;);
+Path path2 = Path.of(&quot;c:\\zooinfo\\November\\employees.txt&quot;);
+Path path3 = Path.of(&quot;/home/zoodirectory&quot;);
+
+// More
+Path path1 = Path.of(&quot;pandas&quot;, &quot;cuddly.png&quot;);
+Path path2 = Path.of(&quot;c:&quot;, &quot;zooinfo&quot;, &quot;November&quot;, &quot;employees.txt&quot;);
+Path path3 = Path.of(&quot;/&quot;, &quot;home&quot;, &quot;zoodirectory&quot;);
+</code></pre>
+        <ul>
+            <li>также для получения instance <code>Path</code> можно использовать фабричный метод у <code>java.nio.file.Paths</code>:</li>
+        </ul>
+        <pre><code class="language-java">// Paths factory method
+public static Path get(String first, String… more)
+</code></pre>
+
+        <ul>
+            <li>можно получить instance <code>FileSystem</code>, а из него получить <code>Path</code>:</li>
+        </ul>
+        <pre><code class="language-java">// FileSystems factory method
+public static FileSystem getDefault()
+
+// FileSystem instance method
+public Path getPath (String first, String… more)
+
+// Examples
+Path path1 = FileSystems.getDefault().getPath(&quot;pandas/cuddly.png&quot;);
+Path path2 = FileSystems.getDefault()
+ .getPath(&quot;c:\\zooinfo\\November\\employees.txt&quot;);
+Path path3 = FileSystems.getDefault().getPath(&quot;/home/zoodirectory&quot;);
+</code></pre>
+        <ul>
+            <li>есть возможность подключаться к удаленной (remote) файловой системе:</li>
+        </ul>
+        <pre><code class="language-java">FileSystem fileSystem = FileSystems.getFileSystem(
+    new URI(&quot;http://www.selikoff.net&quot;));
+    Path path = fileSystem.getPath(&quot;duck.txt&quot;);
+</code></pre>
+        <ul>
+            <li>
+                <code>Path</code> содержит три метода для получения базовой информации о представлении пути и получении его частей:</li>
+        </ul>
+        <pre><code class="language-java">public String toString()
+public int getNameCount()
+public Path getName(int index)
+</code></pre>
+        <ul>
+            <li>есть метод <code>subpath()</code> для получения подпути:</li>
+        </ul>
+        <pre><code class="language-java">public Path subpath(int beginIndex, int endIndex)
+</code></pre>
+        <ul>
+            <li>можно проверить является ли путь абсолютным с помощью <code>isAbsolute()</code>. Текущую рабочую директорию можно получить с помощью <code>System.getProperty(&quot;user.dir&quot;)</code>:</li>
+        </ul>
+        <pre><code class="language-java">public boolean isAbsolute()
+public Path toAbsolutePath()
+</code></pre>
+        <ul>
+            <li>пути соединяются с помощью <code>resolve()</code>:</li>
+        </ul>
+        <pre><code class="language-java">public Path resolve(Path other)
+public Path resolve(String other)
+</code></pre>
+        <ul>
+            <li>с помощью <code>relativize()</code> можно получить относительный путь относительно другого пути. При этом, оба пути должны быть одновременно либо абсолютными, либо относительными:</li>
+        </ul>
+        <pre><code class="language-java">var path1 = Path.of(&quot;fish.txt&quot;);
+var path2 = Path.of(&quot;friendly/birds.txt&quot;);
+System.out.println(path1.relativize(path2));
+System.out.println(path2.relativize(path1));
+
+// ../friendly/birds.txt
+// ../../fish.txt
+</code></pre>
+        <ul>
+            <li>
+                <code>normalize()</code> позволяет избавляться от лишних символов в пути:</li>
+        </ul>
+        <pre><code class="language-java">var p1 = Path.of(&quot;./armadillo/../shells.txt&quot;);
+System.out.println(p1.normalize()); // shells.txt
+var p2 = Path.of(&quot;/cats/../panther/food&quot;);
+System.out.println(p2.normalize()); // /panther/food
+var p3 = Path.of(&quot;../../fish.txt&quot;);
+System.out.println(p3.normalize()); // ../../fish.txt
+</code></pre>
+        <ul>
+            <li>метод <code>toRealPath()</code> также избавляется от лишних символов в пути, а также бросает исключение в том случае, если путь не существует.</li>
+        </ul>
+        <h2>NIO.2 Files</h2>
+        <ul>
+            <li>метод для проверки на то, существует ли файл:</li>
+        </ul>
+        <pre><code class="language-java">public static boolean exists(Path path, LinkOption… options)
+</code></pre>
+        <ul>
+            <li>метод для проверки на то, ссылаются ли два объекта <code>Path</code> на один и тот же файл (директорию):</li>
+        </ul>
+        <pre><code class="language-java">public static boolean isSameFile (Path path, Path path2) throws IOException
+</code></pre>
+        <ul>
+            <li>метод <code>createDirectory()</code> создает директорию и бросает исключение, если она уже существует, или если пути до директории не существуют. <code>createDirectories()</code> создает директорию со всем несуществующими родительскими директориями, ведущими к пути:</li>
+        </ul>
+        <pre><code class="language-java">public static Path createDirectory (Path dir,
+    FileAttribute&lt;?&gt;... attrs) throws IOException
+public static Path createDirectories (Path dir,
+    FileAttribute&lt;?&gt;... attrs) throws IOException
+</code></pre>
+        <ul>
+            <li>метод для копирования файлов (директорий). Для перезаписи можно использовать опцию <code>REPLACE_EXISTING</code>. Можно производить копирование, используя потоки:</li>
+        </ul>
+        <pre><code class="language-java">public static Path copy (Path source, Path target, CopyOption... options) throws IOException
+
+// Example
+Files.copy(Paths.get(&quot;book.txt&quot;), Paths.get(&quot;movie.txt&quot;),
+    StandardCopyOption.REPLACE_EXISTING);
+
+public static long copy (InputStream in, Path target, CopyOption… options) throws IOException
+public static long copy (Path source, OutputStream out) throws IOException
+</code></pre>
+        <ul>
+            <li>переименование или перемещение путей с помощью <code>move()</code>:</li>
+        </ul>
+        <pre><code class="language-java">public static Path move (Path source, Path target, CopyOption... options) throws IOException
+
+// Examples
+Files.move(Path.of(&quot;c:\\zoo&quot;), Path.of(&quot;c:\\zoo-new&quot;));
+Files.move(Path.of(&quot;c:\\user\\addresses.txt&quot;),
+    Path.of(&quot;c:\\zoo-new\\addresses2.txt&quot;));
+</code></pre>
+        <ul>
+            <li>метод для удаления. При этом, папка должна быть пустой:</li>
+        </ul>
+        <pre><code class="language-java">public static void delete (Path path) throws IOException
+public static boolean deleteIfExists (Path path) throws IOException
+</code></pre>
+        <ul>
+            <li>в <code>Files</code> существует метод для чтения всех строк файла в список:</li>
+        </ul>
+        <pre><code class="language-java">public static List&lt;String&gt; readAllLines(Path path) throws IOException
+</code></pre>
+        <ul>
+            <li>методы для получения различных свойств файла:</li>
+        </ul>
+        <pre><code class="language-java">public static boolean isHidden(Path path) throws IOException
+public static boolean isReadable(Path path)
+public static boolean isWritable(Path path)
+public static boolean isExecutable(Path path)
+public static long size (Path path) throws IOException
+public static FileTime getLastModifiedTime (Path path, LinkOption... options) throws IOException
+</code></pre>
+        <ul>
+            <li>можно получать объект, содержащий атрибуты пути:</li>
+        </ul>
+        <pre><code class="language-java">var path = Paths.get(&quot;/turtles/sea.txt&quot;);
+BasicFileAttributes data = Files.readAttributes(path,
+ BasicFileAttributes.class);
+System.out.println(&quot;Is a directory? &quot; + data.isDirectory());
+System.out.println(&quot;Is a regular file? &quot; + data.isRegularFile());
+System.out.println(&quot;Is a symbolic link? &quot; + data.isSymbolicLink());
+System.out.println(&quot;Size (in bytes): &quot; + data.size());
+System.out.println(&quot;Last modified: &quot; + data.lastModifiedTime());
+</code></pre>
+        <ul>
+            <li>можно изменять атрибуты (но не все) с помощью view объекта:</li>
+        </ul>
+        <pre><code class="language-java">// Read file attributes
+var path = Paths.get(&quot;/turtles/sea.txt&quot;);
+BasicFileAttributeView view = Files.getFileAttributeView(path,
+    BasicFileAttributeView.class);
+BasicFileAttributes attributes = view.readAttributes();
+// Modify file last modified time
+FileTime lastModifiedTime = FileTime.fromMillis(
+    attributes.lastModifiedTime().toMillis() + 10_000);
+view.setTimes(lastModifiedTime, null, null);
+</code></pre>
+        <h2>Stream API</h2>
+        <ul>
+            <li>получение содержимого директории:</li>
+        </ul>
+        <pre><code class="language-java">public static Stream&lt;Path&gt; list (Path dir) throws IOException
+</code></pre>
+        <ul>
+            <li>deep копирование с использованием Stream API:</li>
+        </ul>
+        <pre><code class="language-java">public void copyPath(Path source, Path target) {
+    try {
+        Files.copy(source, target);
+        if(Files.isDirectory(source))
+            try (Stream&lt;Path&gt; s = Files.list(source)) {
+                s.forEach(p -&gt; copyPath(p,
+                        target.resolve(p.getFileName())));
+            }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <code>Files</code> содержит методы для обхода дерева папки, используя поиск в глубину (DFS):</li>
+        </ul>
+        <pre><code class="language-java">public static Stream&lt;Path&gt; walk(Path start,
+    FileVisitOption... options) throws IOException
+public static Stream&lt;Path&gt; walk(Path start, int maxDepth,
+    FileVisitOption... options) throws IOException
+</code></pre>
+        <ul>
+            <li>пример нахождения общего размера всех файлов в папке:</li>
+        </ul>
+        <pre><code class="language-java">private long getSize(Path p) {
+    try {
+        return Files.size(p);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return 0L;
+}
+public long getPathSize(Path source) throws IOException {
+    try (var s = Files.walk(source)) {
+        return s.parallel()
+                .filter(p -&gt; !Files.isDirectory(p))
+                .mapToLong(this::getSize)
+                .sum();
+    }
+}
+</code></pre>
+        <ul>
+            <li>также для поиска можно использовать метод <code>find()</code>:</li>
+        </ul>
+        <pre><code class="language-java">public static Stream&lt;Path&gt; find (Path start,
+    int maxDepth,
+    BiPredicate&lt;Path, BasicFileAttributes&gt; matcher,
+    FileVisitOption… options) throws IOException
+
+// Example
+Path path = Paths.get(&quot;/bigcats&quot;);
+long minSize = 1_000;
+try (var s = Files.find(path, 10,
+        (p, a) -&gt; a.isRegularFile()
+                &amp;&amp; p.toString().endsWith(&quot;.java&quot;)
+                &amp;&amp; a.size() &gt; minSize)) {
+    s.forEach(System.out::println);
+}
+</code></pre>
+        <ul>
+            <li>для построчного чтения файла используется <code>lines()</code>. Метод похож на <code>Files.readAllLines()</code>, однако преимущество <code>lines()</code> в том, что происходит lazy evaluation, и не требуется, чтобы файл хранился полностью в памяти:</li>
+        </ul>
+        <pre><code class="language-java">public static Stream&lt;String&gt; lines(Path path) throws IOException
+
+// Example
+Path path = Paths.get(&quot;/fish/sharks.log&quot;);
+try (var s = Files.lines(path)) {
+    s.forEach(System.out::println);
+}
+</code></pre>
+
+    </main>
+
+    <footer>
+        <div>Page load time is <span id="page-load-time">###</span> seconds</div>
+        <br/>
+        2022-2022 &copy; by mullerdaniil
+    </footer>
+</div>
+
+<script src="scripts/set-active-links.js"></script>
+</body>
+</html>

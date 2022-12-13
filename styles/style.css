@@ -117,6 +117,11 @@ body {
     padding: 15px;
 }
 
+.sidebar__navigation__item_active {
+    background: linear-gradient(to right, #202853FF, #FFFFFF00);
+    border-left: 2px solid cyan;
+}
+
 .sidebar__navigation__item:hover {
     color: var(--text-color-active);
     background-color: var(--sidebar-navigation-item-background-color);
@@ -170,6 +175,10 @@ body {
     padding: 5px 40px 5px 0;
 }
 
+.header__menu__item_active {
+    color: #3AB700;
+}
+
 .header__menu__item:hover {
     color: var(--text-color-active);
     transition: 0.3s;
@@ -194,7 +203,7 @@ body {
 .content__header {
     color: var(--text-color-active);
     margin: 20px 0 10px 10px;
-    font-size: 50px;
+    font-size: 40px;
 }
 
 .content__grid-section {

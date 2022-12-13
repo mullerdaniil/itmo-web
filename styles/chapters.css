@@ -23,13 +23,27 @@
     overflow: hidden;
 }
 
+.content > ul > li:hover {
+    background-color: var(--content-section-background-color-active);
+    transition: 0.3s;
+}
+
 .lang-java, code {
     font-family: 'Lucida Console', sans-serif;
     color: #5EDB96;
 }
 
-pre, p {
+.lang-java:hover, code:hover {
+    color: lime;
+    transition: 0.25s;
+}
+
+pre, .content > p {
     margin-left: 50px;
+}
+
+table {
+    margin-left: 40px;
 }
 
 tr:nth-child(odd) {
@@ -38,6 +52,11 @@ tr:nth-child(odd) {
 
 tr:nth-child(even) {
     background-color: #2E2D5B;
+}
+
+th {
+    background-color: var(--content-section-background-color);
+    padding: 15px;
 }
 
 td {

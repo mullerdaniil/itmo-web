@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacts</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
+    <link rel="stylesheet" href="styles/images.css">
+    <link rel="stylesheet" href="styles/tables.css">
+    <script src="scripts/page-load-time.js"></script>
+</head>
+
+<body>
+<div class="sidebar">
+    <div class="sidebar__logo">
+        <img src="images/jp11-logo.png" alt="Logo">
+    </div>
+    <nav class="sidebar__navigation">
+        <ul class="sidebar__navigation__list">
+            <li class="sidebar__navigation__item"><a href="java-fundamentals.html">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="annotations.html">Annotations</a></li>
+            <li class="sidebar__navigation__item"><a href="generics-and-collections.html">Generics and collections</a></li>
+            <li class="sidebar__navigation__item"><a href="functional-programming.html">Functional programming</a></li>
+            <li class="sidebar__navigation__item"><a href="exceptions-assertions-localization.html">Exceptions, assertions, localization</a></li>
+            <li class="sidebar__navigation__item"><a href="modular-applications.html">Modular applications</a></li>
+            <li class="sidebar__navigation__item"><a href="concurrency.html">Concurrency</a></li>
+            <li class="sidebar__navigation__item"><a href="io.html">I/O</a></li>
+            <li class="sidebar__navigation__item"><a href="nio-2.html">NIO.2</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="content-container">
+    <header class="header">
+        <nav class="header__menu">
+            <div class="header__menu__item header__menu__input-field">
+                <input type="text" placeholder="🔍 Найти">
+            </div>
+            <ul class="header__menu__list">
+                <li class="header__menu__item full-text"><a href="index.html">🏠 Домой</a></li>
+                <li class="header__menu__item short-text"><a href="index.html">🏠</a></li>
+                <li class="header__menu__item full-text"><a href="articles.html">📰 Статьи</a></li>
+                <li class="header__menu__item short-text"><a href="articles.html">📰</a></li>
+                <li class="header__menu__item full-text"><a href="contacts.html">☎ Контакты</a></li>
+                <li class="header__menu__item short-text"><a href="contacts.html">☎</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1 class="content__header">Контакты</h1>
+        <section class="content__section">
+            <a href="https://t.me/mullerdaniil">Telegram</a>
+        </section>
+    </main>
+
+    <footer>
+        <div>Page load time is <span id="page-load-time">###</span> seconds</div>
+        <br/>
+        2022-2022 &copy; by mullerdaniil
+    </footer>
+</div>
+
+<script src="scripts/set-active-links.js"></script>
+</body>
+</html>
