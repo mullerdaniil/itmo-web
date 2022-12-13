@@ -5,23 +5,24 @@
     <title>Java Pitfalls</title>
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/text.css">
+    <link rel="stylesheet" href="styles/images.css">
 </head>
 
 <body>
 <div class="sidebar">
     <div class="sidebar__logo">
-        <img src="images/jp11-logo.png" alt="Image">
+        <img src="images/jp11-logo.png" alt="Logo">
     </div>
     <nav class="sidebar__navigation">
         <ul class="sidebar__navigation__list">
-            <li class="sidebar__navigation__item">Java Fundamentals</li>
-            <li class="sidebar__navigation__item">Annotations</li>
-            <li class="sidebar__navigation__item">Functional programming</li>
-            <li class="sidebar__navigation__item">Exceptions, assertions, localization</li>
-            <li class="sidebar__navigation__item">Modular applications</li>
-            <li class="sidebar__navigation__item">Concurrency</li>
-            <li class="sidebar__navigation__item">I/O</li>
-            <li class="sidebar__navigation__item">NIO.2</li>
+            <li class="sidebar__navigation__item"><a href="#">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Annotations</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Functional programming</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Exceptions, assertions, localization</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Modular applications</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Concurrency</a></li>
+            <li class="sidebar__navigation__item"><a href="#">I/O</a></li>
+            <li class="sidebar__navigation__item"><a href="#">NIO.2</a></li>
         </ul>
     </nav>
 </div>
@@ -33,9 +34,9 @@
                 <input type="text" placeholder="🔍 Найти">
             </div>
             <ul class="header__menu__list">
-                <li class="header__menu__item">🏠 Домой</li>
-                <li class="header__menu__item">📰 Статьи</li>
-                <li class="header__menu__item">☎ Контакты</li>
+                <li class="header__menu__item"><a href="#">🏠 Домой</a></li>
+                <li class="header__menu__item"><a href="#">📰 Статьи</a></li>
+                <li class="header__menu__item"><a href="#">☎ Контакты</a></li>
             </ul>
         </nav>
     </header>
@@ -93,26 +94,28 @@ public class D {
         </section>
 
         <h1 class="content__header">lab-2</h1>
+
         <section class="content__section">
-            <h1 class="content__section__header">🔵 Текст</h1>
+            <h1 class="content__section__header">🔵 Форматирование текста</h1>
             <p class="text-paragraph">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquam, aliquid asperiores cum, dolorum
-                eaque earum eligendi esse exercitationem fugit, id impedit ipsa magni minus omnis porro quasi quis
-                tenetur? Animi aspernatur autem blanditiis cumque exercitationem magnam nemo obcaecati officiis
-                perferendis possimus quae quas quibusdam rerum sed, sit! Adipisci, aliquam aliquid aut, cumque eligendi
-                ipsa laudantium maxime officiis quos sapiente sequi soluta veniam. Delectus deserunt ex obcaecati odio
-                quae qui quo rem, velit voluptatibus. Adipisci atque dignissimos itaque maxime necessitatibus officiis
-                pariatur praesentium quasi qui quis, ratione reiciendis. A accusamus ad adipisci architecto aspernatur
-                consequatur cumque cupiditate eaque eius ex illo in molestias nobis odit, officia placeat quasi. Culpa
-                doloremque eaque molestiae, omnis repudiandae voluptate. Animi commodi corporis culpa deleniti
-                dignissimos distinctio dolor doloribus earum, expedita ipsam maxime molestiae molestias, mollitia nobis
-                numquam odit, omnis possimus quidem repudiandae similique! Animi beatae blanditiis commodi, consectetur
-                consequuntur cumque dignissimos doloribus, eos error exercitationem fuga hic iste iure iusto magnam modi
-                molestiae nihil nisi nostrum omnis provident quam repellendus sequi similique tempora temporibus totam
-                unde vel veritatis voluptatum. Autem beatae cumque cupiditate deleniti dicta, dolore doloremque harum
-                hic, ipsam libero nam repellendus, sapiente sint tempora tenetur? Accusantium, amet consequatur ipsa
-                quis recusandae voluptatibus.
+                Lorem ipsum dolor sit amet, <strong>consectetur adipisicing elit</strong> [strong]. Ab aliquam, aliquid asperiores cum, dolorum
+                eaque earum <b>eligendi esse exercitationem fugit</b> [b], id impedit ipsa magni minus omnis porro <em>quasi
+                quis
+                tenetur</em> [em]? <span style="text-transform: uppercase;">Animi aspernatur autem blanditiis cumque exercitationem</span> [uppercase] magnam nemo obcaecati officiis
+                perferendis possimus quae quas <i>quibusdam rerum sed, sit</i> [i]! <span style="background-color: #131217;">Adipisci, aliquam aliquid aut</span>, cumque eligendi
+                ipsa laudantium maxime officiis quos sapiente sequi soluta veniam. <span style="color: aqua;">Delectus deserunt ex obcaecati
+                odio</span>
+                quae qui <del>quo rem, velit voluptatibus</del> [del]. Adipisci atque dignissimos itaque maxime necessitatibus officiis
+                pariatur praesentium <ins>quasi qui quis, ratione reiciendis</ins> [ins].
             </p>
+        </section>
+
+
+        <section class="content__single-column-section">
+            <section class="content__section">
+                <h1 class="content__section__header">🔴 Картинка</h1>
+                <img class="shadowed-image" src="images/mona-lisa-nice2.jpg" alt="Mona Lisa">
+            </section>
         </section>
 
 
