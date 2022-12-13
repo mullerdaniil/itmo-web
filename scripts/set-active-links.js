@@ -1,10 +1,11 @@
 const menuItems = [
     'index.html',
     'articles.html',
-    'contacts.html'
+    'contacts.html',
+    'notes.html'
 ];
 
-(() => {
+function setActiveElements() {
     let addressTokens = document.location.toString().split('/');
     let page = addressTokens[addressTokens.length - 1];
 
@@ -15,6 +16,7 @@ const menuItems = [
         'header__menu__item_active' :
         'sidebar__navigation__item_active';
 
-    parentElements.forEach(element => console.log(element));
     parentElements.forEach(element => element.classList.add(activeClassAttribute));
-})()
+}
+
+window.addEventListener('load', setActiveElements);
