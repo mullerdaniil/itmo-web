@@ -1,0 +1,16 @@
+.content__section__table th {
+    padding: 15px;
+    background-color: var(--panel-color);
+}
+
+.content__section__table td {
+    padding: 20px;
+}
+
+.content__section__table tr:nth-child(odd) {
+    background-color: #292857;
+}
+
+.content__section__table tr:nth-child(even) {
+    background-color: #2E2D5B;
+}

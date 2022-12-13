@@ -42,7 +42,8 @@
     --sidebar-navigation-item-active-border-color: lime;
     --header-background-color: var(--panel-color);
     --input-field-background-color: var(--panel-color);
-    --content-section-background-color: #292857;
+    /*--content-section-background-color: #292857;*/
+    --content-section-background-color: var(--background-color);
     --content-section-background-color-active: #33325F;
 
 
@@ -77,13 +78,15 @@ a, a:visited, a:hover, a:active {
 body {
     background-color: var(--background-color);
     color: var(--text-color-inactive);
-    display: flex;
-    flex-direction: row;
+    /*display: flex;*/
+    /*flex-direction: row;*/
 }
 
 
 .sidebar {
-
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 .sidebar__logo {
@@ -95,7 +98,7 @@ body {
 }
 
 .sidebar__logo img {
-    width: 155px;
+    width: 170px;
 }
 
 .sidebar__navigation {
@@ -127,15 +130,18 @@ body {
     flex-direction: column;
     background-color: var(--panel-color);
     min-height: 100vh;
-    width: 100%;
+    width: 80%;
     border: 2px solid var(--panel-border-color);
-    border-top-left-radius: 25px;
+    border-top-left-radius: 30px;
+
+    position: absolute;
+    left: 20%;
 }
 
 .header {
     padding: 35px 0 20px 100px;
     border-bottom: 1px solid var(--panel-border-color);
-    border-top-left-radius: 25px;
+    border-top-left-radius: 30px;
     margin-bottom: 20px;
     background-color: var(--header-background-color);
 }
@@ -160,7 +166,7 @@ body {
     flex-direction: column;
     justify-content: center;
     font-size: 22px;
-    min-width: 120px;
+    min-width: 110px;
     padding: 5px 40px 5px 0;
 }
 
@@ -233,4 +239,43 @@ footer {
     padding: 20px;
     border-top: 1px solid var(--line-color);
     text-align: center;
+}
+
+
+.full-text {
+}
+
+.short-text {
+    display: none;
+}
+
+@media screen and (max-width: 1200px) {
+    .sidebar__logo img {
+        width: 100px;
+    }
+
+    .sidebar__navigation {
+        display: none;
+    }
+
+    .content__grid-section {
+        display: grid;
+        grid-template-columns: 100%;
+    }
+
+    .short-text {
+        display: inline-block;
+    }
+
+    .full-text {
+        display: none;
+    }
+
+    .header__menu__input-field input {
+        width: 200px;
+    }
+
+    .content {
+        padding: 0 30px 0 50px;
+    }
 }
