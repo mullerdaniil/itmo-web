@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Java fundamentals</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
+    <link rel="stylesheet" href="styles/images.css">
+    <link rel="stylesheet" href="styles/chapters.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar__logo">
+        <img src="images/jp11-logo.png" alt="Logo">
+    </div>
+    <nav class="sidebar__navigation">
+        <ul class="sidebar__navigation__list">
+            <li class="sidebar__navigation__item"><a href="#">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Annotations</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Functional programming</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Exceptions, assertions, localization</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Modular applications</a></li>
+            <li class="sidebar__navigation__item"><a href="#">Concurrency</a></li>
+            <li class="sidebar__navigation__item"><a href="#">I/O</a></li>
+            <li class="sidebar__navigation__item"><a href="#">NIO.2</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="content-container">
+    <header class="header">
+        <nav class="header__menu">
+            <div class="header__menu__item header__menu__input-field">
+                <input type="text" placeholder="🔍 Найти">
+            </div>
+            <ul class="header__menu__list">
+                <li class="header__menu__item full-text"><a href="#">🏠 Домой</a></li>
+                <li class="header__menu__item short-text"><a href="#">🏠</a></li>
+                <li class="header__menu__item full-text"><a href="#">📰 Статьи</a></li>
+                <li class="header__menu__item short-text"><a href="#">📰</a></li>
+                <li class="header__menu__item full-text"><a href="#">☎ Контакты</a></li>
+                <li class="header__menu__item short-text"><a href="#">☎</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1>Chapter 1. Java Fundamentals</h1>
+        <h2>enums</h2>
+        <ul>
+            <li>у enum есть static метод <code>values()</code>, instance методы <code>name()</code> и <code>ordinal()</code>
+            </li>
+        </ul>
+        <pre><code class="language-java">for (Season season : Season.values()) {
+    System.out.println(season.name() + &quot; &quot; + season.ordinal());
+}
+</code></pre>
+        <ul>
+            <li>в <code>switch</code> в <code>case</code> нельзя писать enum полностью, нужно только имя</li>
+        </ul>
+        <pre><code class="language-java">Season summer = Season.SUMMER;
+switch (summer) {
+    case WINTER:
+        System.out.println(&quot;Winter!&quot;);
+        break;
+    case SUMMER:
+        System.out.println(&quot;Summer!&quot;);
+        break;
+    default:
+        System.out.println(&quot;Default!&quot;);
+}
+</code></pre>
+        <ul>
+            <li>можно писать abstract методы и их реализацию для каждого enum</li>
+        </ul>
+        <pre><code class="language-java">enum E {
+    A {
+        void m() {
+            System.out.println(&quot;a&quot;);
+        }
+    },
+    B {
+        void m() {
+            System.out.println(&quot;b&quot;);
+        }
+    };
+    abstract void m();
+}
+</code></pre>
+        <ul>
+            <li>можно писать дефолтную реализацию и override версию для отдельных enum</li>
+        </ul>
+        <pre><code class="language-java">enum E {
+    A {
+        void m() {
+            System.out.println(&quot;a&quot;);
+        }
+    },
+    B, C, D;
+    void m() {
+        System.out.println(&quot;default impl&quot;);
+    }
+}
+</code></pre>
+        <ul>
+            <li>список значений в enum должен быть объявлен первым</li>
+        </ul>
+        <h2>Вложенные классы</h2>
+        <ul>
+            <li>
+                <p>есть четыре вида вложенных классов:</p>
+                <ul>
+                    <li>inner</li>
+                    <li>static nested</li>
+                    <li>local</li>
+                    <li>anonymous</li>
+                </ul>
+            </li>
+            <li>
+                <p>inner класс объявляется там же, где и поля, методы класса. Может иметь любой access modifier. Не может иметь static поля, методы, если только это не static final поля. Имеет доступ к членам внешнего класса</p>
+            </li>
+            <li>
+                <p>к inner классу должен быть привязать внешний класс. Можно инстанциировать inner класс и так:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">public class A {
+    class B {}
+
+    public static void main(String[] args) {
+        A a = new A();
+        a.new B();
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>при компиляции класса с inner классом получаются два файла: <code>Outer.class</code> и <code>Outer$Inner.class</code></p>
+            </li>
+            <li>
+                <p>static nested классу не требуется привязка к instance внешнего класса в отличие от inner класса. В целом, похож на top-level класс, однако:</p>
+                <ul>
+                    <li>создается namespace (обращение через внешний класс), так как класс вложен</li>
+                    <li>может иметь любой access modifier</li>
+                    <li>внешний класс может обращаться к полям, методам static nested</li>
+                </ul>
+            </li>
+            <li>
+                <p>static nested классы можно импортировать двумя способами (обычный и static import):</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">import package1.Outer.Nested;
+</code></pre>
+        <p>или</p>
+        <pre><code class="language-java">import static package1.Outer.Nested;
+</code></pre>
+        <ul>
+            <li>
+                <p>local класс объявляется внутри метода (или конструктора, или initializer). Подобно local переменной, local класс выходит из scope когда заканчивается метод. Соответственно, instance'ы local класса можно создавать только внутри метода.</p>
+            </li>
+            <li>
+                <p>особенности local классов:</p>
+                <ul>
+                    <li>нет access modifier</li>
+                    <li>не могут быть static и содержать static members (за исключением static final)</li>
+                    <li>имеют доступ ко всем members внешнего класса (если объявлены в instance method)</li>
+                    <li>могут обращаться к переменным, если те final или effectively final</li>
+                </ul>
+            </li>
+            <li>
+                <p>anonymous класс - специальная форма local класса, не имеющая имени. Он объявляется и инстанциируется в одном statement через <code>new</code>.</p>
+            </li>
+            <li>
+                <p>c помощью anonymous класса нельзя одновременно и реализовать интерфейс, и отнаследоваться от класса (если только класс не <code>Object</code>).</p>
+            </li>
+            <li>
+                <p>Правила доступа вложенных классов:</p>
+            </li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Класс</th>
+                <th>Может наследовать любой класс или реализовывать любое число интерфейсов</th>
+                <th>Имеет доступ к членам внешнего класса без ссылки на него</th>
+                <th>Имеет доступ к local переменным метода</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Inner</td>
+                <td>Да</td>
+                <td>Да</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Static nested</td>
+                <td>Да</td>
+                <td>Нет</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Local</td>
+                <td>Да</td>
+                <td>Да (если объявлен в instance методе)</td>
+                <td>Да (если final или effectively final)</td>
+            </tr>
+            <tr>
+                <td>Anonymous</td>
+                <td>Нет (только один класс или интерфейс)</td>
+                <td>Да (если объявлен в instance методе)</td>
+                <td>Да (если final или effectively final)</td>
+            </tr>
+            </tbody>
+        </table>
+        <h2>Interface members</h2>
+        <ul>
+            <li>есть 6 разновидностей interface members:</li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Обязательные модификаторы</th>
+                <th>Неявные модификаторы</th>
+                <th>В какой версии Java появились</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Constant variable</td>
+                <td>-</td>
+                <td><code>public static final</code></td>
+                <td>1.0</td>
+            </tr>
+            <tr>
+                <td>Abstract method</td>
+                <td>-</td>
+                <td><code>public abstract</code></td>
+                <td>1.0</td>
+            </tr>
+            <tr>
+                <td>Default method</td>
+                <td><code>default</code></td>
+                <td><code>public </code></td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>Static method</td>
+                <td><code>static</code></td>
+                <td><code>public</code></td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>Private method</td>
+                <td><code>private</code></td>
+                <td>-</td>
+                <td>9</td>
+            </tr>
+            <tr>
+                <td>Private static method</td>
+                <td><code>private static</code></td>
+                <td>-</td>
+                <td>9</td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>default метод может находиться только в интерфейсе. Он не может быть static или final. Если класс наследует два default метода с одинаковой сигнатурой, то он обязан переопределить данный метод:</li>
+        </ul>
+        <pre><code class="language-java">interface A {
+    default int getValue() {
+        return 5;
+    }
+}
+
+interface B {
+    default int getValue() {
+        return 7;
+    }
+}
+
+class C implements A, B {
+    @Override
+    public int getValue() {
+        return 10;
+    }
+}
+</code></pre>
+        <ul>
+            <li>можно вызвать версию из определенного интерфейса через <code>super</code>:</li>
+        </ul>
+        <pre><code class="language-java">interface A {
+    default int getValue() {
+        return 5;
+    }
+}
+
+interface B {
+    default int getValue() {
+        return 7;
+    }
+}
+
+class C implements A, B {
+    @Override
+    public int getValue() {
+        return A.super.getValue();
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>static метод в интерфейсе не может быть <code>abstract</code> или <code>final</code>. Static методы не наследуются и доступны в классах-реализациях только через ссылку на сам интерфейс. Получается, что проблема множественного наследования static методов не касается.</p>
+            </li>
+            <li>
+                <p>private метод в интерфейсе могут вызывать только <code>default</code> и нестатические <code>private</code> методы интерфейса:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">interface I {
+    private void privateMethod() {
+
+    }
+
+    default void defaultMethod() {
+        privateMethod();
+    }
+
+    private void anotherPrivateMethod() {
+        privateMethod();
+    }
+}
+</code></pre>
+        <ul>
+            <li>private static метод в интерфейсе могут вызывать другие методы в интерфейсе (разумеется, кроме abstract метода).</li>
+        </ul>
+        <h2>Functional programming</h2>
+        <ul>
+            <li>функциональный интерфейс - это интерфейс, имеющий один <code>abstract</code> метод. Lambda выражение - передаваемый блок кода, подобие анонимного класса, определяющего один <code>abstract</code> метод.</li>
+        </ul>
+        <pre><code class="language-java">@FunctionalInterface
+interface I {
+    void m();
+}
+</code></pre>
+        <ul>
+            <li>Данный пример показывает использование lambda выражения и анонимного класса:</li>
+        </ul>
+        <pre><code class="language-java">public class Testing {
+    public static void main(String[] args) {
+        use(() -&gt; System.out.println(&quot;hi&quot;));
+        use(new I() {
+            @Override
+            public void m() {
+                System.out.println(&quot;hi&quot;);
+            }
+        });
+    }
+
+    static void use(I i) {
+        i.m();
+    }
+}
+
+@FunctionalInterface
+interface I {
+    void m();
+}
+</code></pre>
+        <ul>
+            <li>
+                <code>public</code> методы, находящиеся в классе <code>Object</code> являются исключениями (не учитываются) при отнесению интерфейса к функциональным, исходя из того, что все классы-реализации интерфейса наследуются от <code>Object</code>, а значит, реализуют эти методы. Например, данный интерфейс не является функциональым:</li>
+        </ul>
+        <pre><code class="language-java">interface I {
+    String toString();
+}
+</code></pre>
+        <p>Пример валидного функционального интерфейса:</p>
+        <pre><code class="language-java">@FunctionalInterface
+interface I {
+    String toString();
+    boolean equals(Object o);
+    int hashCode();
+    void m();
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>отступление про <code>equals</code> и <code>hashCode</code>. Дефолтная реализация <code>equals</code> - использование <code>==</code>. Если переопределяется <code>equals</code>, то должен переопределяться и <code>hashCode()</code>. Если <code>a.equals(b) == true</code>, то также должно выполняться и <code>a.hashCode() == b.hashCode()</code>.</p>
+            </li>
+            <li>
+                <p>лямбда-выражение может иметь много форм. Скобки после <code>-&gt;</code> могут опускаться (при этом опускается и <code>return</code>), если в теле один statement. Скобки при параметрах могут опускаться если всего один параметр и его тип явно не написан. Вместо типа можно использовать <code>var</code>. Если <code>var</code> используется для одного параметр, то он должен использоваться и для остальных (то же применимо и к типам).</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">e -&gt; e.m()
+(var e) -&gt; e.m()
+(Type e) -&gt; e.m()
+(Type e) -&gt; { return e.m(); }
+
+e -&gt; {}
+(var e) -&gt; {}
+(Type e) -&gt; {}
+
+(a, b) -&gt; {}
+(var a, var b) -&gt; {}
+(Type1 a, Type2 b) -&gt; {}
+</code></pre>
+        <ul>
+            <li>в теле лямбда-выражения можно объявлять local переменные, при этом нельзя переобъявлять переменные:</li>
+        </ul>
+        <pre><code class="language-java">    void method(int e) {
+        int a = 9;
+        Predicate&lt;Integer&gt; p = e -&gt; {   // ERROR
+            int a = 4;                  // ERROR
+            return e == a;
+        };
+    }
+</code></pre>
+        <ul>
+            <li>лямбды подобно анонимным классам могут использовать <code>static</code>, instance, local (<code>final</code> или effectively final) переменные:</li>
+        </ul>
+        <pre><code class="language-java">    static int staticV = 1;
+    int instanceV = 2;
+    String s;
+
+    void method() {
+        int localV = 3;
+        final int finalV = 4;
+
+        instanceV = 9;
+
+        Predicate&lt;Integer&gt; p = (e) -&gt; {
+            int a = staticV;
+            int b = instanceV;
+            int c = localV;
+            int d = finalV;
+            return a + b + c + d + e &gt; 0;
+        };
+
+        staticV = 19;
+    }
+</code></pre>
+
+
+
+    </main>
+
+    <footer>
+        2022-2022 &copy; by mullerdaniil
+    </footer>
+</div>
+
+</body>
+</html>

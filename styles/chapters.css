@@ -1,0 +1,45 @@
+.content h1 {
+    color: var(--text-color-active);
+    font-size: 36px;
+    margin-top: 40px;
+}
+
+.content h2 {
+    font-size: 28px;
+    margin-top: 40px;
+    margin-left: 10px;
+}
+
+.content ul {
+
+}
+
+.content > ul > li {
+    width: 70%;
+    padding: 30px;
+    margin: 20px 0;
+    background-color: var(--content-section-background-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.lang-java, code {
+    font-family: 'Lucida Console', sans-serif;
+    color: #5EDB96;
+}
+
+pre, p {
+    margin-left: 50px;
+}
+
+tr:nth-child(odd) {
+    background-color: #33325F;
+}
+
+tr:nth-child(even) {
+    background-color: #2E2D5B;
+}
+
+td {
+    padding: 20px;
+}

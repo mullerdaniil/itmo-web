@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/text.css">
     <link rel="stylesheet" href="styles/images.css">
+    <link rel="stylesheet" href="styles/tables.css">
 </head>
 
 <body>
@@ -15,7 +16,7 @@
     </div>
     <nav class="sidebar__navigation">
         <ul class="sidebar__navigation__list">
-            <li class="sidebar__navigation__item"><a href="#">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="java-fundamentals.html">Java fundamentals</a></li>
             <li class="sidebar__navigation__item"><a href="#">Annotations</a></li>
             <li class="sidebar__navigation__item"><a href="#">Functional programming</a></li>
             <li class="sidebar__navigation__item"><a href="#">Exceptions, assertions, localization</a></li>
@@ -34,9 +35,12 @@
                 <input type="text" placeholder="🔍 Найти">
             </div>
             <ul class="header__menu__list">
-                <li class="header__menu__item"><a href="#">🏠 Домой</a></li>
-                <li class="header__menu__item"><a href="#">📰 Статьи</a></li>
-                <li class="header__menu__item"><a href="#">☎ Контакты</a></li>
+                <li class="header__menu__item full-text"><a href="#">🏠 Домой</a></li>
+                <li class="header__menu__item short-text"><a href="#">🏠</a></li>
+                <li class="header__menu__item full-text"><a href="#">📰 Статьи</a></li>
+                <li class="header__menu__item short-text"><a href="#">📰</a></li>
+                <li class="header__menu__item full-text"><a href="#">☎ Контакты</a></li>
+                <li class="header__menu__item short-text"><a href="#">☎</a></li>
             </ul>
         </nav>
     </header>
@@ -90,7 +94,6 @@ public class D {
                 </pre>
             </section>
 
-
         </section>
 
         <h1 class="content__header">lab-2</h1>
@@ -98,24 +101,84 @@ public class D {
         <section class="content__section">
             <h1 class="content__section__header">🔵 Форматирование текста</h1>
             <p class="text-paragraph">
-                Lorem ipsum dolor sit amet, <strong>consectetur adipisicing elit</strong> [strong]. Ab aliquam, aliquid asperiores cum, dolorum
+                Lorem ipsum dolor sit amet, <strong>consectetur adipisicing elit</strong> [strong]. Ab aliquam, aliquid
+                asperiores cum, dolorum
                 eaque earum <b>eligendi esse exercitationem fugit</b> [b], id impedit ipsa magni minus omnis porro <em>quasi
                 quis
-                tenetur</em> [em]? <span style="text-transform: uppercase;">Animi aspernatur autem blanditiis cumque exercitationem</span> [uppercase] magnam nemo obcaecati officiis
-                perferendis possimus quae quas <i>quibusdam rerum sed, sit</i> [i]! <span style="background-color: #131217;">Adipisci, aliquam aliquid aut</span>, cumque eligendi
+                tenetur</em> [em]? <span style="text-transform: uppercase;">Animi aspernatur autem blanditiis cumque exercitationem</span>
+                [uppercase] magnam nemo obcaecati officiis
+                perferendis possimus quae quas <i>quibusdam rerum sed, sit</i> [i]! <span
+                    style="background-color: #131217;">Adipisci, aliquam aliquid aut</span>, cumque eligendi
                 ipsa laudantium maxime officiis quos sapiente sequi soluta veniam. <span style="color: aqua;">Delectus deserunt ex obcaecati
                 odio</span>
-                quae qui <del>quo rem, velit voluptatibus</del> [del]. Adipisci atque dignissimos itaque maxime necessitatibus officiis
-                pariatur praesentium <ins>quasi qui quis, ratione reiciendis</ins> [ins].
+                quae qui
+                <del>quo rem, velit voluptatibus</del>
+                [del]. Adipisci atque dignissimos itaque maxime necessitatibus officiis
+                pariatur praesentium
+                <ins>quasi qui quis, ratione reiciendis</ins>
+                [ins].
             </p>
         </section>
-
 
         <section class="content__single-column-section">
             <section class="content__section">
                 <h1 class="content__section__header">🔴 Картинка</h1>
                 <img class="shadowed-image" src="images/mona-lisa-nice2.jpg" alt="Mona Lisa">
             </section>
+        </section>
+
+        <h1 class="content__header">lab-3</h1>
+
+        <section class="content__section">
+            <h1 class="content__section__header">🔵 Таблица</h1>
+            <table class="content__section__table">
+                <thead>
+                <tr>
+                    <th>Имя</th>
+                    <th>Обязательные модификаторы</th>
+                    <th>Неявные модификаторы</th>
+                    <th>В какой версии Java появились</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Constant variable</td>
+                    <td>-</td>
+                    <td><code>public static final</code></td>
+                    <td>1.0</td>
+                </tr>
+                <tr>
+                    <td>Abstract method</td>
+                    <td>-</td>
+                    <td><code>public abstract</code></td>
+                    <td>1.0</td>
+                </tr>
+                <tr>
+                    <td>Default method</td>
+                    <td><code>default</code></td>
+                    <td><code>public </code></td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>Static method</td>
+                    <td><code>static</code></td>
+                    <td><code>public</code></td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>Private method</td>
+                    <td><code>private</code></td>
+                    <td>-</td>
+                    <td>9</td>
+                </tr>
+                <tr>
+                    <td>Private static method</td>
+                    <td><code>private static</code></td>
+                    <td>-</td>
+                    <td>9</td>
+                </tr>
+                </tbody>
+            </table>
         </section>
 
 
