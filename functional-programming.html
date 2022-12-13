@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional programming</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
+    <link rel="stylesheet" href="styles/images.css">
+    <link rel="stylesheet" href="styles/chapters.css">
+    <script src="scripts/page-load-time.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar__logo">
+        <img src="images/jp11-logo.png" alt="Logo">
+    </div>
+    <nav class="sidebar__navigation">
+        <ul class="sidebar__navigation__list">
+            <li class="sidebar__navigation__item"><a href="java-fundamentals.html">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="annotations.html">Annotations</a></li>
+            <li class="sidebar__navigation__item"><a href="generics-and-collections.html">Generics and collections</a></li>
+            <li class="sidebar__navigation__item"><a href="functional-programming.html">Functional programming</a></li>
+            <li class="sidebar__navigation__item"><a href="exceptions-assertions-localization.html">Exceptions, assertions, localization</a></li>
+            <li class="sidebar__navigation__item"><a href="modular-applications.html">Modular applications</a></li>
+            <li class="sidebar__navigation__item"><a href="concurrency.html">Concurrency</a></li>
+            <li class="sidebar__navigation__item"><a href="io.html">I/O</a></li>
+            <li class="sidebar__navigation__item"><a href="nio-2.html">NIO.2</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="content-container">
+    <header class="header">
+        <nav class="header__menu">
+            <div class="header__menu__item header__menu__input-field">
+                <input type="text" placeholder="🔍 Найти">
+            </div>
+            <ul class="header__menu__list">
+                <li class="header__menu__item full-text"><a href="index.html">🏠 Домой</a></li>
+                <li class="header__menu__item short-text"><a href="index.html">🏠</a></li>
+                <li class="header__menu__item full-text"><a href="articles.html">📰 Статьи</a></li>
+                <li class="header__menu__item short-text"><a href="articles.html">📰</a></li>
+                <li class="header__menu__item full-text"><a href="contacts.html">☎ Контакты</a></li>
+                <li class="header__menu__item short-text"><a href="contacts.html">☎</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1>Chapter 4. Functional programming</h1>
+        <h2>Функциональные интерфейсы</h2>
+        <ul>
+            <li>основные функциональные интерфейсы:</li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Интерфейс</th>
+                <th>Тип возвращаемого значения</th>
+                <th>Метод</th>
+                <th>Количество аргументов</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>Supplier&lt;T&gt;</code></td>
+                <td><code>T</code></td>
+                <td><code>get()</code></td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td><code>Consumer&lt;T&gt;</code></td>
+                <td><code>void</code></td>
+                <td><code>accept(T)</code></td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td><code>BiConsumer&lt;T, U&gt;</code></td>
+                <td><code>void</code></td>
+                <td><code>accept(T, U)</code></td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td><code>Predicate&lt;T&gt;</code></td>
+                <td><code>boolean</code></td>
+                <td><code>test(T)</code></td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td><code>BiPredicate&lt;T, U&gt;</code></td>
+                <td><code>boolean</code></td>
+                <td><code>test(T, U)</code></td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td><code>Function&lt;T, R&gt;</code></td>
+                <td><code>R</code></td>
+                <td><code>apply(T)</code></td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td><code>BiFunction&lt;T, U, R&gt;</code></td>
+                <td><code>R</code></td>
+                <td><code>apply(T, U)</code></td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td><code>UnaryOperator&lt;T&gt;</code></td>
+                <td><code>T</code></td>
+                <td><code>apply(T)</code></td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td><code>BinaryOperator&lt;T&gt;</code></td>
+                <td><code>T</code></td>
+                <td><code>apply(T, T)</code></td>
+                <td>2</td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>определения <code>UnaryOperator</code> и <code>BinaryOperator</code>:</li>
+        </ul>
+        <pre><code class="language-java">public interface UnaryOperator&lt;T&gt; extends Function&lt;T, T&gt; {}
+public interface BinaryOperator&lt;T&gt; extends BiFunction&lt;T, T, T&gt; {}
+</code></pre>
+        <ul>
+            <li>примеры использования функциональных интерфейсов:</li>
+        </ul>
+        <pre><code class="language-java">class FIs {
+    private final Map&lt;String, Integer&gt; strToIntMap = new HashMap&lt;&gt;();
+
+    void examples() {
+        Supplier&lt;LocalDateTime&gt; s = LocalDateTime::now;
+        Consumer&lt;Long&gt; c = System.out::println;
+        BiConsumer&lt;String, Integer&gt; bc = strToIntMap::put;
+        Predicate&lt;String&gt; p = String::isEmpty;
+        BiPredicate&lt;String, String&gt; bp = String::startsWith;
+        Function&lt;String, Integer&gt; f = Integer::parseInt;
+        BiFunction&lt;String, Integer, Character&gt; bf = String::charAt;
+        UnaryOperator&lt;String&gt; uo = String::toUpperCase;
+        BinaryOperator&lt;String&gt; bo = String::concat;
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>во встроенных функциональных интерфейсах существуют вспомогательные convenience методы:</p>
+                <ul>
+                    <li>
+                        <code>andThen()</code> (<code>Consumer</code>)</li>
+                    <li>
+                        <code>andThen()</code>, <code>compose()</code> (<code>Function</code>)</li>
+                    <li>
+                        <code>and()</code>, <code>or()</code>, <code>negate()</code> (<code>Predicate</code>)</li>
+                </ul>
+            </li>
+            <li>
+                <p>пример использования convenience методов у <code>Predicate</code>:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">class FIs {
+    void c() {
+        List&lt;Integer&gt; list = List.of(-4, -3, -2, -1, 0, 1, 2, 3, 4);
+        Predicate&lt;Integer&gt; evenTest = x -&gt; x % 2 == 0;
+        Predicate&lt;Integer&gt; positiveTest = x -&gt; x &gt; 0;
+        Predicate&lt;Integer&gt; bothTest = evenTest.and(positiveTest);
+
+        for (Integer number : list) {
+            if (bothTest.test(number)) {
+                System.out.print(number + &quot; &quot;);
+            }
+        }
+    }
+}
+
+// OUTPUT:
+// 2 4
+</code></pre>
+        <h2>Optional</h2>
+        <ul>
+            <li>
+                <code>Optional</code> - специальный объект-контейнер, который содержит или не содержит non-null значение. Например, если при расчете среднего значения элементов количество элементов равно нулю, то среднее значение не определено. В такое случае возвращается <code>Optional.empty()</code>. Если же значение можно посчитать, тогда возвращается <code>Optional.of(result)</code>:</li>
+        </ul>
+        <pre><code class="language-java">class C {
+    static Optional&lt;Double&gt; average(double... values) {
+        if (values.length == 0) {
+            return Optional.empty();
+        }
+
+        double sum = 0;
+        for (double value : values) {
+            sum += value;
+        }
+        double count = values.length;
+
+        return Optional.of(sum / count);
+    }
+}
+</code></pre>
+        <ul>
+            <li>пример проверки значения в <code>Optional</code>:</li>
+        </ul>
+        <pre><code class="language-java">void use() {
+    Optional&lt;Double&gt; nonEmptyBox = average(3.5, 2.7, -13.3);
+    Optional&lt;Double&gt; emptyBox = average();
+
+    if (nonEmptyBox.isPresent()) {
+        System.out.println(nonEmptyBox.get()); // -2.3666666666666667
+    }
+
+    System.out.println(emptyBox.isEmpty()); // true
+
+    emptyBox.get(); // NoSuchElementException
+}
+</code></pre>
+        <ul>
+            <li>чтобы создать empty <code>Optional</code> в случае <code>null</code> используется <code>ofNullable(value)</code>. Две эквивалентные записи:</li>
+        </ul>
+        <pre><code class="language-java">String value = null;
+Optional&lt;String&gt; op1 = value != null ? Optional.of(value) : Optional.empty();
+Optional&lt;String&gt; op2 = Optional.ofNullable(value);
+</code></pre>
+        <ul>
+            <li>instance методы <code>Optional</code>:
+                <ul>
+                    <li>
+                        <code>get()</code>
+                    </li>
+                    <li>
+                        <code>ifPresent(Consumer c)</code>
+                    </li>
+                    <li>
+                        <code>isPresent()</code>
+                    </li>
+                    <li>
+                        <code>orElse(T other)</code>
+                    </li>
+                    <li>
+                        <code>orElseGet(Supplier s)</code>
+                    </li>
+                    <li>
+                        <code>orElseThrow()</code>
+                    </li>
+                    <li>
+                        <code>orElseThrow(Supplier exceptionSupplier)</code>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <h2>Streams</h2>
+        <ul>
+            <li>
+                <p>stream - последовательность данных. Stream pipeline состоит из частей:</p>
+                <ul>
+                    <li>source (сюда приходит stream)</li>
+                    <li>промежуточные операции (превращение одного stream в другой)</li>
+                    <li>terminal операция (получение результата, после этого stream перестает быть доступным)</li>
+                </ul>
+            </li>
+            <li>
+                <p>методы создания stream:</p>
+            </li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Метод</th>
+                <th>Конечный?</th>
+                <th>Описание</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>Stream.empty() </code></td>
+                <td>Да</td>
+                <td>Пустой stream</td>
+            </tr>
+            <tr>
+                <td><code>Stream.of(varargs) </code></td>
+                <td>Да</td>
+                <td>Из элементов</td>
+            </tr>
+            <tr>
+                <td><code>coll.stream() </code></td>
+                <td>Да</td>
+                <td>Из коллекции</td>
+            </tr>
+            <tr>
+                <td><code>coll.parallelStream() </code></td>
+                <td>Да</td>
+                <td>Параллельный stream из коллекции</td>
+            </tr>
+            <tr>
+                <td><code>Stream.generate(supplier) </code></td>
+                <td>Нет</td>
+                <td>Элемент генерируется с помощью <code>supplier</code></td>
+            </tr>
+            <tr>
+                <td><code>Stream.iterate(seed, unaryOperator) </code></td>
+                <td>Нет</td>
+                <td>Первый элемент создается с помощью <code>seed</code>, а последующие с помощью <code>unaryOperator</code></td>
+            </tr>
+            <tr>
+                <td><code>Stream.iterate(seed, predicate, unaryOperator) </code></td>
+                <td>Да/Нет</td>
+                <td>То же самое, только остановка, если <code>Predicate</code> - <code>false</code></td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>
+                <p>Reduction - специальный тип терминальной операции, при которой все содержимое stream преобразуется в один примитив или объект.</p>
+            </li>
+            <li>
+                <p>терминальные операции:</p>
+                <ul>
+                    <li>
+                        <code>count()</code>
+                    </li>
+                    <li>
+                        <code>min()</code>, <code>max()</code>
+                    </li>
+                    <li>
+                        <code>findAny()</code>, <code>findFirst()</code>
+                    </li>
+                    <li>
+                        <code>allMatch()</code>, <code>anyMatch()</code>, <code>noneMatch()</code>
+                    </li>
+                    <li>
+                        <code>forEach()</code>, <code>reduce()</code>, <code>collect()</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>сигнатуры метода <code>reduce()</code>:</p>
+                <ul>
+                    <li>
+                        <code>T reduce(T identity, BinaryOperator&lt;T&gt; accumulator)</code>
+                    </li>
+                    <li>
+                        <code>Optional&lt;T&gt; reduce(BinaryOperator&lt;T&gt; accumulator)</code>
+                    </li>
+                    <li>
+                        <code>&lt;U&gt; U reduce(U identity, BiFunction&lt;U, ? super T, U&gt; accumulator, BinaryOperator&lt;U&gt; combiner)</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>пример использования <code>reduce()</code>:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">Stream&lt;Integer&gt; s = Stream.of(2, 3, 5);
+int p = s.reduce(1, (a, b) -&gt; a * b);
+System.out.println(p);  // 30
+</code></pre>
+        <ul>
+            <li>
+                <p>сигнатуры метода <code>collect()</code>:</p>
+                <ul>
+                    <li>
+                        <code>&lt;R&gt; R collect(Supplier&lt;R&gt; supplier,BiConsumer&lt;R, ? super T&gt; accumulator,BiConsumer&lt;R, R&gt; combiner)</code>
+                    </li>
+                    <li>
+                        <code>&lt;R,A&gt; R collect(Collector&lt;? super T, A,R&gt; collector)</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>примеры использования <code>collect()</code>:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">Stream&lt;Integer&gt; s = Stream.of(2, 3, 5);
+StringBuilder p
+        = s.collect(StringBuilder::new,
+        (sb, number) -&gt; sb.append(number + &quot;/&quot;),
+        StringBuilder::append
+        );
+System.out.println(p);
+</code></pre>
+        <pre><code class="language-java">Stream&lt;Integer&gt; s = Stream.of(2, 3, 5);
+Set&lt;Integer&gt; set = s.collect(Collectors.toSet());
+System.out.println(set);    // [2, 3, 5]
+</code></pre>
+        <ul>
+            <li>
+                <p>основные intermediate операции:</p>
+                <ul>
+                    <li>
+                        <code>filter()</code>
+                    </li>
+                    <li>
+                        <code>distinct()</code>
+                    </li>
+                    <li>
+                        <code>limit()</code>
+                    </li>
+                    <li>
+                        <code>skip()</code>
+                    </li>
+                    <li>
+                        <code>map()</code>
+                    </li>
+                    <li>
+                        <code>flatMap()</code>
+                    </li>
+                    <li>
+                        <code>sorted()</code>
+                    </li>
+                    <li>
+                        <code>peek()</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>пример использования <code>flatMap()</code>:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">List&lt;Integer&gt; l1 = List.of(2, 7, 11);
+List&lt;Integer&gt; l2 = List.of(4, 8);
+Stream&lt;List&lt;Integer&gt;&gt; s = Stream.of(l1, l2);
+s.flatMap(Collection::stream)
+    .forEach(e -&gt; System.out.print(e + &quot; &quot;));
+</code></pre>
+        <ul>
+            <li>
+                <p>можно использовать притимивные streams:</p>
+                <ul>
+                    <li>
+                        <code>IntStream</code>
+                    </li>
+                    <li>
+                        <code>LongStream</code>
+                    </li>
+                    <li>
+                        <code>DoubleStream</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>методы primitive streams:</p>
+                <ul>
+                    <li>
+                        <code>average()</code> (<code>OptionalDouble</code>)</li>
+                    <li>
+                        <code>boxed()</code>
+                    </li>
+                    <li>
+                        <code>max()</code> (Optional)</li>
+                    <li>
+                        <code>min()</code> (Optional)</li>
+                    <li>
+                        <code>range()</code> (<code>IntSteam</code>, <code>LongStream</code>)</li>
+                    <li>
+                        <code>rangeClosed()</code> (<code>IntSteam</code>, <code>LongStream</code>)</li>
+                    <li>
+                        <code>sum()</code>
+                    </li>
+                    <li>
+                        <code>summaryStatistics()</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>с помощью метода <code>map()</code> можно получать stream такого же типа, а с <code>mapToObj()</code>, <code>mapToDouble()</code>, <code>mapToInt()</code>, <code>mapToLong()</code> получать streams другого типа.</p>
+            </li>
+            <li>
+                <p>интерфейс <code>Supplier</code> не позволяет использовать checked исключения. Как решение, можно превратить checked исключение в unchecked.</p>
+            </li>
+        </ul>
+
+
+    </main>
+
+    <footer>
+        <div>Page load time is <span id="page-load-time">###</span> seconds</div>
+        <br/>
+        2022-2022 &copy; by mullerdaniil
+    </footer>
+</div>
+
+<script src="scripts/set-active-links.js"></script>
+</body>
+</html>

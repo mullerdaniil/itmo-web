@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generics and collections</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
+    <link rel="stylesheet" href="styles/images.css">
+    <link rel="stylesheet" href="styles/chapters.css">
+    <script src="scripts/page-load-time.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar__logo">
+        <img src="images/jp11-logo.png" alt="Logo">
+    </div>
+    <nav class="sidebar__navigation">
+        <ul class="sidebar__navigation__list">
+            <li class="sidebar__navigation__item"><a href="java-fundamentals.html">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="annotations.html">Annotations</a></li>
+            <li class="sidebar__navigation__item"><a href="generics-and-collections.html">Generics and collections</a></li>
+            <li class="sidebar__navigation__item"><a href="functional-programming.html">Functional programming</a></li>
+            <li class="sidebar__navigation__item"><a href="exceptions-assertions-localization.html">Exceptions, assertions, localization</a></li>
+            <li class="sidebar__navigation__item"><a href="modular-applications.html">Modular applications</a></li>
+            <li class="sidebar__navigation__item"><a href="concurrency.html">Concurrency</a></li>
+            <li class="sidebar__navigation__item"><a href="io.html">I/O</a></li>
+            <li class="sidebar__navigation__item"><a href="nio-2.html">NIO.2</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="content-container">
+    <header class="header">
+        <nav class="header__menu">
+            <div class="header__menu__item header__menu__input-field">
+                <input type="text" placeholder="🔍 Найти">
+            </div>
+            <ul class="header__menu__list">
+                <li class="header__menu__item full-text"><a href="index.html">🏠 Домой</a></li>
+                <li class="header__menu__item short-text"><a href="index.html">🏠</a></li>
+                <li class="header__menu__item full-text"><a href="articles.html">📰 Статьи</a></li>
+                <li class="header__menu__item short-text"><a href="articles.html">📰</a></li>
+                <li class="header__menu__item full-text"><a href="contacts.html">☎ Контакты</a></li>
+                <li class="header__menu__item short-text"><a href="contacts.html">☎</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1>Chapter 3. Generics and Collections</h1>
+        <h2>Method reference</h2>
+        <ul>
+            <li>
+                <p>method references позволяют заменять лямбды и избежать избыточности в коде. Реализуются с помощью оператора <code>::</code>. Имеют 4 формата:</p>
+                <ul>
+                    <li>
+                        <code>static</code> методы</li>
+                    <li>instance методы на определенном объекте</li>
+                    <li>instance методы на параметре, определяемом в runtime</li>
+                    <li>конструкторы</li>
+                </ul>
+            </li>
+            <li>
+                <p>пример вызова <code>static</code> методов:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">class B {
+    public static void m(int a, int b) {}
+}
+
+class T {
+    void use() {
+        BiConsumer&lt;Integer, Integer&gt; x = B::m;
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>Java сама находит подходящий метод по контексту и может выдасть ошибку, если не найдет ни одного или более одного подходящего метода.</p>
+            </li>
+            <li>
+                <p>пример method reference на instance методе определенного объекта:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">class B {
+    public String m(int a) {
+        return &quot;[&quot; + a + &quot;]&quot;;
+    }
+}
+
+class T {
+    String use(int p) {
+        B b = new B();
+        Function&lt;Integer, String&gt; x = b::m;
+        return x.apply(p);
+    }
+}
+</code></pre>
+        <ul>
+            <li>пример лямбды и соответствующего instance method reference на параметре:</li>
+        </ul>
+        <pre><code class="language-java">BiPredicate&lt;String, String&gt; l = (s, p) -&gt; s.startsWith(p);
+BiPredicate&lt;String, String&gt; r = String::startsWith;
+</code></pre>
+        <ul>
+            <li>constructor reference осуществляется с помощью ключевого слова <code>new</code>:</li>
+        </ul>
+        <pre><code class="language-java">class B {
+    public B(int x) {}
+}
+
+class T {
+    void use() {
+        Function&lt;Integer, B&gt; l = x -&gt; new B(x);
+        Function&lt;Integer, B&gt; r = B::new;
+    }
+}
+</code></pre>
+        <ul>
+            <li>примеры реального использования method reference:</li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Вид</th>
+                <th>Пример</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>static</code> метод</td>
+                <td><code>Collections::sort</code></td>
+            </tr>
+            <tr>
+                <td>instance метод на определенном объекте</td>
+                <td><code>str::startsWith</code></td>
+            </tr>
+            <tr>
+                <td>instance метод на параметре, определяемом в runtime</td>
+                <td><code>String::isEmpty</code></td>
+            </tr>
+            <tr>
+                <td>конструктор</td>
+                <td><code>ArrayList::new</code></td>
+            </tr>
+            </tbody>
+        </table>
+        <h2>Collections Framework</h2>
+        <ul>
+            <li>оператор <code>&lt;&gt;</code> позволяет сокращать код:</li>
+        </ul>
+        <pre><code class="language-java">List&lt;Integer&gt; longForm = new ArrayList&lt;Integer&gt;();
+List&lt;Integer&gt; shortForm = new ArrayList&lt;&gt;();
+</code></pre>
+        <ul>
+            <li>
+                <p>есть 4 главных интерфейса в Java Collections Framework (при этом все из этих кроме <code>Map</code> наследуются от интерфейса <code>Collection</code>):</p>
+                <ul>
+                    <li>
+                        <code>List</code>
+                    </li>
+                    <li>
+                        <code>Set</code>
+                    </li>
+                    <li>
+                        <code>Queue</code>
+                    </li>
+                    <li>
+                        <code>Map</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>Java не позволяет удалять элементы из списка при использовании for each loop. Бросается <code>ConcurrentModificationException</code>.</p>
+            </li>
+            <li>
+                <p><code>ArrayList</code> - это resizable массив. Его премущество в том, что поиск происходит за константное время. Добавление или удаление работает медленнее, чем поиск. Соответственно, <code>ArrayList</code> хорошо подходит в случае, если операций чтения больше, чем операций записи.</p>
+            </li>
+            <li>
+                <p><code>LinkedList</code> реализует и <code>List</code>, и <code>Queue</code>. Его преимущество в том, что доступ, добавление, удаление в начале и конце списка происходит за константное время. Минус в работе с произвольными индексами (работа за линейное время).</p>
+            </li>
+            <li>
+                <p>можно создавать списки через фабричные методы:</p>
+            </li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Метод</th>
+                <th>Описание</th>
+                <th>Можно добавлять элементы?</th>
+                <th>Можно изменять элементы?</th>
+                <th>Можно удалять элементы?</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>Arrays.asList(varargs)</code></td>
+                <td>fixed size список с привязкой к массиву</td>
+                <td>Нет</td>
+                <td>Да</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td><code>List.of(varargs)</code></td>
+                <td>immutable список</td>
+                <td>Нет</td>
+                <td>Нет</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td><code>List.copyOf(collection)</code></td>
+                <td>immutable список с копией значений оригинала</td>
+                <td>Нет</td>
+                <td>Нет</td>
+                <td>Нет</td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>
+                <p>если изменить <code>Arrays.asList</code>, то изменения применятся также к оригинальному массиву, и наоборот.</p>
+            </li>
+            <li>
+                <p>методы <code>List</code>:</p>
+                <ul>
+                    <li>
+                        <code>boolean add(E element)</code>
+                    </li>
+                    <li>
+                        <code>void add(int index, E element)</code>
+                    </li>
+                    <li>
+                        <code>E get(int index)</code>
+                    </li>
+                    <li>
+                        <code>E remove(int index)</code>
+                    </li>
+                    <li>
+                        <code>void replaceAll(UnaryOperator&lt;E&gt; op)</code>
+                    </li>
+                    <li>
+                        <code>E set(int index, E e)</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p>обход списка с помощью итератора:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">    void iterate(List&lt;Integer&gt; list) {
+        Iterator&lt;Integer&gt; iterator = list.iterator();;
+        while (iterator.hasNext()) {
+            Integer item = iterator.next();
+        }
+    }
+</code></pre>
+        <ul>
+            <li>
+                <p><code>HashSet</code> использует хэш-таблицу (<code>hashCode()</code>) для хранения элементов. Преимущество в том, что добавление и проверка на наличие элемента выполняется за const время, однако теряется порядок добавления элементов.</p>
+            </li>
+            <li>
+                <p><code>TreeSet</code> использует дерево, в котором элементы отсортированны, однако работает медленнее, чем <code>HashSet</code>.</p>
+            </li>
+        </ul>
+        <p><code>LinkedList</code> - это двусторонняя очередь, однако не так эффективна, как &quot;чистая&quot; очередь.</p>
+        <ul>
+            <li>методы <code>Queue</code>:</li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Метод</th>
+                <th>Описание</th>
+                <th>Бросает исключение?</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>boolean add(E e)</code></td>
+                <td>Добавляет элемент в конец, бросает исключение пре превышении ограничения размеров</td>
+                <td>Да</td>
+            </tr>
+            <tr>
+                <td><code>boolean offer(E e)</code></td>
+                <td>Добавляет элемент в конец</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td><code>E element()</code></td>
+                <td>Возвращает head, или бросает исключение, если очередь пустая</td>
+                <td>Да</td>
+            </tr>
+            <tr>
+                <td><code>E peek()</code></td>
+                <td>Возвращает head или <code>null</code>, если очередь пустая</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td><code>E remove()</code></td>
+                <td>Возвращает и удаляет head или бросает исключение, если очередь пустая</td>
+                <td>Да</td>
+            </tr>
+            <tr>
+                <td><code>E poll()</code></td>
+                <td>Возвращает и удаляет head или <code>null</code>, если очередь пустая</td>
+                <td>Нет</td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>вместо <code>Map.of()</code> можно использовать <code>Map.ofEntries()</code>:</li>
+        </ul>
+        <pre><code class="language-java">Map&lt;String, Integer&gt; map = Map.ofEntries(
+        Map.entry(&quot;uno&quot;, 1),
+        Map.entry(&quot;dos&quot;, 2),
+        Map.entry(&quot;tres&quot;, 3)
+);
+</code></pre>
+
+        <ul>
+            <li>
+                <p>структуры, использующие сортировку, не разрешают <code>null</code>.</p>
+            </li>
+            <li>
+                <p>альтернативные коллекции для многопоточности:</p>
+                <ul>
+                    <li>
+                        <code>Vector implements List</code>
+                    </li>
+                    <li>
+                        <code>Hashtable implements Map</code>
+                    </li>
+                    <li>
+                        <code>Stack implements Queue</code>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <h2>Сортировка</h2>
+        <ul>
+            <li>
+                <p>порядок сортировки символов: цифры, заглавные буквы, строчные буквы.</p>
+            </li>
+            <li>
+                <p>интерфейс <code>Comparable</code> имеет один метод:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">public interface Comparable&lt;T&gt; {
+    int compareTo(T o);
+}
+</code></pre>
+        <ul>
+            <li>пример реализации интерфейса <code>Comparable</code> (сравнение по полю <code>String name</code>):</li>
+        </ul>
+        <pre><code class="language-java">class Person implements Comparable&lt;Person&gt; {
+    private final String name;
+
+    public Person(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return this.name.compareTo(o.name);
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>правила реализации метода <code>compareTo()</code>:</p>
+                <ul>
+                    <li>
+                        <code>0</code>, если объекты эквивалентны</li>
+                    <li>&lt; <code>0</code>, если данный объект меньше аргумента</li>
+                    <li>&gt; <code>0</code>, если данный объект больше аргумента</li>
+                </ul>
+            </li>
+            <li>
+                <p><code>Comparable</code> находится в пакете <code>java.lang</code>, в то время как <code>Comparator</code> находится в пакете <code>java.util</code> и имеет метод <code>compare()</code>. Оба - функциональные интерфейсы.</p>
+            </li>
+            <li>
+                <p>можно сортировать, передавая метод в <code>Comparator.comparing()</code>:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">class C {
+    static int negate(int x) {
+        return -x;
+    }
+
+    void sort(List&lt;Integer&gt; list) {
+        Collections.sort(list, Comparator.comparing(C::negate));
+    }
+}
+</code></pre>
+        <ul>
+            <li>для сортировки по нескольким полям можно использовать <code>thenComparing()</code>:</li>
+        </ul>
+        <pre><code class="language-java">class B {
+    int f1;
+    int f2;
+
+    public int getF1() {
+        return f1;
+    }
+
+    public int getF2() {
+        return f2;
+    }
+}
+
+class T {
+    void comp() {
+        Comparator&lt;B&gt; bComparator = Comparator
+                .comparingInt(B::getF1)
+                .thenComparing(B::getF2);
+    }
+}
+</code></pre>
+
+        <ul>
+            <li>
+                <p><code>Collections.sort()</code> принимает только объекты, реализующие <code>Comparable</code>, однако вместе с коллекцией можно передать <code>Comparator</code>.</p>
+            </li>
+            <li>
+                <p><code>Collections.binarySearch(list, index)</code> возвращает индекс совпадения indexMatch, а если элемент не найден, то (-insertionPoint - 1). При этом список должен быть отсортированным.</p>
+            </li>
+            <li>
+                <p>коллекции, которые требуют элементы, реализующие <code>Comparable</code>, проверяют их не при компиляции, а в runtime. Однако можно передать <code>Comparator</code> в конструктор и снять требование:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">class C {
+    int value;
+}
+
+class T {
+    void add() {
+        Set&lt;C&gt; set = new TreeSet&lt;&gt;(Comparator.comparingInt(o -&gt; o.value));
+        set.add(new C());
+    }
+}
+</code></pre>
+        <h2>Generics</h2>
+        <ul>
+            <li>generics вводятся с помощью задания параметра в угловых скобках:</li>
+        </ul>
+        <pre><code class="language-java">class C&lt;T&gt; {
+    private final T field;
+
+    public C(T field) {
+        this.field = field;
+    }
+
+    public T getField() {
+        return field;
+    }
+}
+</code></pre>
+        <ul>
+            <li>существует конвенция для названий generics. Ее суть - использовать заглавную букву:</li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Буква</th>
+                <th>Тип</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>E</code></td>
+                <td>Элемент</td>
+            </tr>
+            <tr>
+                <td><code>K</code></td>
+                <td><code>Map</code> ключ</td>
+            </tr>
+            <tr>
+                <td><code>V</code></td>
+                <td><code>Map</code> значение</td>
+            </tr>
+            <tr>
+                <td><code>N</code></td>
+                <td>Число</td>
+            </tr>
+            <tr>
+                <td><code>T</code></td>
+                <td>Тип данных</td>
+            </tr>
+            <tr>
+                <td><code>S, U, V</code></td>
+                <td>Для нескольких типов</td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>
+                <p>на самом деле после компиляции происходит type erasure, то есть все generics становятся <code>Object</code>. Компилятор также добавляет необходимые cast для работы с erased классами.</p>
+            </li>
+            <li>
+                <p>интерфейс также может объявить formal type параметр:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">interface I&lt;T&gt; {
+    void use(T t);
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>есть 3 способа реализации generic интерфейса:</p>
+                <ul>
+                    <li>указание generic типа в классе:</li>
+                </ul>
+                <pre><code class="language-java">class A implements I&lt;String&gt; {
+    @Override
+    public void use(String s) {}
+}
+</code></pre>
+                <ul>
+                    <li>создание generic класса:</li>
+                </ul>
+                <pre><code class="language-java">class B&lt;U&gt; implements I&lt;U&gt; {
+    @Override
+    public void use(U u) {}
+}
+</code></pre>
+                <ul>
+                    <li>не использовать generics (raw type):</li>
+                </ul>
+                <pre><code class="language-java">class C implements I {
+    @Override
+    public void use(Object o) {}
+}
+</code></pre>
+            </li>
+            <li>
+                <p>существуют ограничения на использование generics:</p>
+                <ul>
+                    <li>нельзя использовать <code>new T()</code>
+                    </li>
+                    <li>нельзя создавать массив generics</li>
+                    <li>вызывать <code>instanceof</code>
+                    </li>
+                    <li>использовать примитив в качестве generic типа</li>
+                    <li>создавать <code>static</code> переменную generic типа</li>
+                </ul>
+            </li>
+            <li>
+                <p>можно создавать generic методы. Generic тип объявляется перед возвращаемым значением:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">class Holder&lt;T&gt; {
+    private final T t;
+
+    public Holder(T t) {
+        this.t = t;
+    }
+
+    public T getT() {
+        return t;
+    }
+}
+
+class C {
+    public &lt;T&gt; void justTake(T t) {}
+
+    public &lt;T&gt; Holder&lt;T&gt; makeHolder(T t) {
+        return new Holder&lt;&gt;(t);
+    }
+}
+</code></pre>
+        <ul>
+            <li>можно объявить тип явно при вызове generic метода. Пример неявного и явного объявлений типа:</li>
+        </ul>
+        <pre><code class="language-java">public Holder&lt;String&gt; makeStringHolder() {
+    String str = &quot;sample&quot;;
+    var a = makeHolder(str);
+    var b = this.makeHolder(str);
+    var c = this.&lt;String&gt;makeHolder(str);
+    return c;
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>generic type параметр, объявленный в методе, не зависит от generic type параметра, объявленного в классе.</p>
+            </li>
+            <li>
+                <p>с помощью wildcards можно ограничивать generic тип. Синтаксис заключается в использовании <code>?</code>.</p>
+            </li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Тип</th>
+                <th>Синтаксис</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Неограниченный</td>
+                <td><code>?</code></td>
+            </tr>
+            <tr>
+                <td>Ограниченный сверху</td>
+                <td><code>? extends type</code></td>
+            </tr>
+            <tr>
+                <td>Ограниченный снизу</td>
+                <td><code>? super type</code></td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>
+                <code>?</code> означает любой тип:</li>
+        </ul>
+        <pre><code class="language-java">class C {
+    void use(List&lt;?&gt; list) {
+        System.out.println(list);
+    }
+
+    void pass() {
+        List&lt;String&gt; strings = new ArrayList&lt;&gt;();
+        List&lt;Object&gt; objects = new ArrayList&lt;&gt;();
+        List&lt;C&gt; cs = new ArrayList&lt;&gt;();
+        List&lt;Integer&gt; integers = new ArrayList&lt;&gt;();
+
+        use(strings);
+        use(objects);
+        use(cs);
+        use(integers);
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <code>? extends type</code> означает ограничение типов сверху:</li>
+        </ul>
+        <pre><code class="language-java">class A {}
+class B extends A {}
+class C extends A {}
+class D extends B {}
+
+class E&lt;T&gt; {}
+
+class Test {
+    void use(E&lt;? extends A&gt; e) {}
+
+    void test() {
+        use(new E&lt;A&gt;());
+        use(new E&lt;B&gt;());
+        use(new E&lt;C&gt;());
+        use(new E&lt;D&gt;());
+        use(new E&lt;Object&gt;());   // COMPILE ERROR
+        use(new E&lt;String&gt;());   // COMPILE ERROR
+        use(new E&lt;Test&gt;());     // COMPILE ERROR
+    }
+}
+</code></pre>
+        <ul>
+            <li>в списки с неограниченными или ограниченными сверху wildcards нельзя добавлять элементы:</li>
+        </ul>
+        <pre><code class="language-java">class A {}
+class B extends A {}
+
+class C {
+    void test() {
+        List&lt;?&gt; list1 = new ArrayList&lt;A&gt;();
+        list1.add(new A());     // COMPILE ERROR
+
+        List&lt;? extends A&gt; list2 = new ArrayList&lt;&gt;();
+        list2.add(new A());     // COMPILE ERROR
+        list2.add(new B());     // COMPILE ERROR
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <code>? super type</code> означает ограничение снизу:</li>
+        </ul>
+        <pre><code class="language-java">class A {}
+class B extends A {}
+
+class C {
+    void use(List&lt;? super B&gt; list) {}
+
+    void pass() {
+        List&lt;A&gt; as = new ArrayList&lt;&gt;();
+        List&lt;B&gt; bs = new ArrayList&lt;&gt;();
+        List&lt;Object&gt; objects = new ArrayList&lt;&gt;();
+        List&lt;String&gt; strings = new ArrayList&lt;&gt;();
+
+        use(as);
+        use(bs);
+        use(objects);
+        use(strings);   // COMPILE ERROR
+    }
+}
+</code></pre>
+        <ul>
+            <li>во время компиляции проверяется возможность добавления элемента в список. В данном случае нельзя добавить <code>new A()</code>, так как <code>list</code> может оказаться <code>List&lt;B&gt;</code>:</li>
+        </ul>
+        <pre><code class="language-java">class A {}
+class B extends A {}
+class C extends B {}
+
+class T {
+    void tryToAdd() {
+        List&lt;? super B&gt; list = new ArrayList&lt;A&gt;();
+        list.add(new A());      // COMPILE ERROR
+        list.add(new B());
+        list.add(new C());
+    }
+}
+</code></pre>
+
+    </main>
+
+    <footer>
+        <div>Page load time is <span id="page-load-time">###</span> seconds</div>
+        <br/>
+        2022-2022 &copy; by mullerdaniil
+    </footer>
+</div>
+
+<script src="scripts/set-active-links.js"></script>
+</body>
+</html>

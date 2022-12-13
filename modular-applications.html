@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modular applications</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
+    <link rel="stylesheet" href="styles/images.css">
+    <link rel="stylesheet" href="styles/chapters.css">
+    <script src="scripts/page-load-time.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar__logo">
+        <img src="images/jp11-logo.png" alt="Logo">
+    </div>
+    <nav class="sidebar__navigation">
+        <ul class="sidebar__navigation__list">
+            <li class="sidebar__navigation__item"><a href="java-fundamentals.html">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="annotations.html">Annotations</a></li>
+            <li class="sidebar__navigation__item"><a href="generics-and-collections.html">Generics and collections</a></li>
+            <li class="sidebar__navigation__item"><a href="functional-programming.html">Functional programming</a></li>
+            <li class="sidebar__navigation__item"><a href="exceptions-assertions-localization.html">Exceptions, assertions, localization</a></li>
+            <li class="sidebar__navigation__item"><a href="modular-applications.html">Modular applications</a></li>
+            <li class="sidebar__navigation__item"><a href="concurrency.html">Concurrency</a></li>
+            <li class="sidebar__navigation__item"><a href="io.html">I/O</a></li>
+            <li class="sidebar__navigation__item"><a href="nio-2.html">NIO.2</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="content-container">
+    <header class="header">
+        <nav class="header__menu">
+            <div class="header__menu__item header__menu__input-field">
+                <input type="text" placeholder="🔍 Найти">
+            </div>
+            <ul class="header__menu__list">
+                <li class="header__menu__item full-text"><a href="index.html">🏠 Домой</a></li>
+                <li class="header__menu__item short-text"><a href="index.html">🏠</a></li>
+                <li class="header__menu__item full-text"><a href="articles.html">📰 Статьи</a></li>
+                <li class="header__menu__item short-text"><a href="articles.html">📰</a></li>
+                <li class="header__menu__item full-text"><a href="contacts.html">☎ Контакты</a></li>
+                <li class="header__menu__item short-text"><a href="contacts.html">☎</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1>Chapter 6. Modular Applications</h1>
+        <h2>Модули</h2>
+        <ul>
+            <li>
+                <p>существует несколько типов модулей:</p>
+                <ul>
+                    <li>named</li>
+                    <li>automatic</li>
+                    <li>unnamed</li>
+                </ul>
+            </li>
+            <li>
+                <p>named модуль - модуль, содержащий <code>module-info</code> файл. Этот файл находится в корне JAR. Такие модули находятся в module path, но не в classpath.</p>
+            </li>
+            <li>
+                <p>automatic модули также находятся в module path, но не содержат <code>module-info</code> файл. Несмотря на то, что у automatic модулей не указано имя, Java все равно определяет его по имени JAR по следующему алгоритму:</p>
+                <ul>
+                    <li>если <code>MANIFEST.MF</code> определяет <code>Automatic-Module-Name</code>, то используется это имя. Иначе, перейти к следующему шагу:</li>
+                    <li>удалить расширение <code>.jar</code>
+                    </li>
+                    <li>удалить версию (например, <code>-1.0.0</code> или <code>-1.0-SNAPSHOT</code>)</li>
+                    <li>заменить символы, не являющиеся буквами, на <code>.</code>
+                    </li>
+                    <li>заменить последовательность <code>.</code> на единственный символ <code>.</code>
+                    </li>
+                    <li>удалить <code>.</code>, если это первый или последний символ строки</li>
+                </ul>
+            </li>
+            <li>
+                <p>unnamed модули находятся в classpath. Это обычные файлы JAR. В отличие от automatic, unnamed модули находятся в classpath, а не в module path. Они могут содержать <code>module-info</code>, но он игнорируется. Модули в module path не могут читать unnamed модули.</p>
+            </li>
+            <li>
+                <p>встроенный модуль <code>java.base</code> содержит основные используемые пакеты. Данный модуль не обязательно объявлять в <code>requires</code>, так как он подключается автоматически.</p>
+            </li>
+            <li>
+                <p>команда <code>jdeps</code> позволяет получать информацию о зависимостях. Пример вывода:</p>
+            </li>
+        </ul>
+        <pre><code>jdeps zoo.dino.jar
+zoo.dino.jar -&gt; java.base
+zoo.dino.jar -&gt; jdk.unsupported
+ zoo.dinos -&gt; java.lang java.base
+ zoo.dinos -&gt; java.time java.base
+ zoo.dinos -&gt; java.util java.base
+ zoo.dinos -&gt; sun.misc JDK internal API (jdk.unsupported)
+</code></pre>
+        <ul>
+            <li>также <code>jpeps</code> можно запустить в режиме summary:</li>
+        </ul>
+        <pre><code>jdeps -s zoo.dino.jar
+zoo.dino.jar -&gt; java.base
+zoo.dino.jar -&gt; jdk.unsupported
+</code></pre>
+        <ul>
+            <li>модульная система не позволяет использовать циклические зависимости между модулями.</li>
+        </ul>
+        <h2>Сервисы</h2>
+        <ul>
+            <li>
+                <p>сервис состоит из интерфейса, любых классов, которые использует интерфейс, и способ поиска реализаций интерфейса. Реализации не являются частью сервиса.</p>
+            </li>
+            <li>
+                <p>service provider interface - интерфейс, определяющий поведение сервиса. Например, модуль может содержать один интерфейс с несколькими методами, который модуль экспортирует с помощью <code>exports</code>.</p>
+            </li>
+            <li>
+                <p>service locator может находить любой класс, реализующий service provider interface:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">ServiceLoader&lt;MyServProvI&gt; loader = ServiceLoader.load(MyServProvI.class);
+</code></pre>
+        <ul>
+            <li>
+                <p>consumer (клиент) - модуль, который использует сервис. Consumer получает сервис с помощью service locator, а затем вызывает методы, которые существуют у service provider interface.</p>
+            </li>
+            <li>
+                <p>service provider - реализация service provider interface. Для предоставления интерфейса в модуле, содержащем реализацию, нужно использовать <code>provides</code>:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">provides com.pack.api.MyServProvI with com.pack2.MyServProvIImpl;
+</code></pre>
+        <ul>
+            <li>характеристики артифактов для сервиса:</li>
+        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Артефакт</th>
+                <th>Часть сервиса?</th>
+                <th>Необходимые директивы в <code>module-info.java</code></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Service provider interface</td>
+                <td>Да</td>
+                <td><code>exports</code></td>
+            </tr>
+            <tr>
+                <td>Service provider</td>
+                <td>Нет</td>
+                <td><code>requires</code>, <code>provides</code></td>
+            </tr>
+            <tr>
+                <td>Service locator</td>
+                <td>Да</td>
+                <td><code>exports</code>, <code>requires</code>, <code>uses</code></td>
+            </tr>
+            <tr>
+                <td>Consumer</td>
+                <td>Нет</td>
+                <td><code>requires</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </main>
+
+    <footer>
+        <div>Page load time is <span id="page-load-time">###</span> seconds</div>
+        <br/>
+        2022-2022 &copy; by mullerdaniil
+    </footer>
+</div>
+
+<script src="scripts/set-active-links.js"></script>
+</body>
+</html>

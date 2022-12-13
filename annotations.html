@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Annotations</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
+    <link rel="stylesheet" href="styles/images.css">
+    <link rel="stylesheet" href="styles/chapters.css">
+    <script src="scripts/page-load-time.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar__logo">
+        <img src="images/jp11-logo.png" alt="Logo">
+    </div>
+    <nav class="sidebar__navigation">
+        <ul class="sidebar__navigation__list">
+            <li class="sidebar__navigation__item"><a href="java-fundamentals.html">Java fundamentals</a></li>
+            <li class="sidebar__navigation__item"><a href="annotations.html">Annotations</a></li>
+            <li class="sidebar__navigation__item"><a href="generics-and-collections.html">Generics and collections</a></li>
+            <li class="sidebar__navigation__item"><a href="functional-programming.html">Functional programming</a></li>
+            <li class="sidebar__navigation__item"><a href="exceptions-assertions-localization.html">Exceptions, assertions, localization</a></li>
+            <li class="sidebar__navigation__item"><a href="modular-applications.html">Modular applications</a></li>
+            <li class="sidebar__navigation__item"><a href="concurrency.html">Concurrency</a></li>
+            <li class="sidebar__navigation__item"><a href="io.html">I/O</a></li>
+            <li class="sidebar__navigation__item"><a href="nio-2.html">NIO.2</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="content-container">
+    <header class="header">
+        <nav class="header__menu">
+            <div class="header__menu__item header__menu__input-field">
+                <input type="text" placeholder="🔍 Найти">
+            </div>
+            <ul class="header__menu__list">
+                <li class="header__menu__item full-text"><a href="index.html">🏠 Домой</a></li>
+                <li class="header__menu__item short-text"><a href="index.html">🏠</a></li>
+                <li class="header__menu__item full-text"><a href="articles.html">📰 Статьи</a></li>
+                <li class="header__menu__item short-text"><a href="articles.html">📰</a></li>
+                <li class="header__menu__item full-text"><a href="contacts.html">☎ Контакты</a></li>
+                <li class="header__menu__item short-text"><a href="contacts.html">☎</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1>Chapter 2. Annotations</h1>
+        <ul>
+            <li>
+                <p>аннотация - это форма метаданных, добавляемых в код, но не являющаяся частью программы. Аннотации похожи на интерфейс, однако могут применяться к классам, к методам, к выражениям, к другим аннотациям.</p>
+            </li>
+            <li>
+                <p>аннотация создается через <code>@interface</code>:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">@interface MyAnnotation {}
+</code></pre>
+        <ul>
+            <li>после этого аннотацию можно применять:</li>
+        </ul>
+        <pre><code class="language-java">@MyAnnotation
+class C {
+    @MyAnnotation class D {}
+    @MyAnnotation() D d = new D();
+    @MyAnnotation
+    C c;
+}
+</code></pre>
+        <ul>
+            <li>можно указать обязательный атрибут аннотации (по умолчанию аттрибуты обязательны). При этом методы в <code>@interface</code> не могут принимать никаких аргументов, а также возращать <code>void</code>.</li>
+        </ul>
+        <pre><code class="language-java">@interface MyAnnotation {
+    int myAttribute();
+}
+
+@MyAnnotation(myAttribute = 14)
+class C {}
+</code></pre>
+        <ul>
+            <li>можно сделать атрибут необязательным, указав значение по умолчанию (которое должно быть non-null constant expression)</li>
+        </ul>
+        <pre><code class="language-java">@interface MyAnnotation {
+    int myAttribute() default 18;
+}
+
+@MyAnnotation(myAttribute = 14)
+class C {}
+
+@MyAnnotation
+class D {}
+</code></pre>
+        <ul>
+            <li>порядок указания атрибутов не важен:</li>
+        </ul>
+        <pre><code class="language-java">@interface MyAnnotation {
+    int a();
+    String b() default &quot;sample&quot;;
+    double c();
+}
+
+@MyAnnotation(c = 3.5, a = 9)
+class C {}
+</code></pre>
+        <ul>
+            <li>
+                <p>в качестве типа атрибута можно использовать только:</p>
+                <ul>
+                    <li>примитив</li>
+                    <li>
+                        <code>String</code>
+                    </li>
+                    <li>
+                        <code>Class</code>
+                    </li>
+                    <li>
+                        <code>enum</code>
+                    </li>
+                    <li>другая аннотация</li>
+                    <li>массив любых этих типов</li>
+                </ul>
+            </li>
+            <li>
+                <p>можно добавлять и использовать константы в аннотациях (подобно интерфейсам переменные в аннотациях неявно <code>public static final</code>):</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">@interface MyAnnotation {
+    int CONST = 25;
+}
+
+class C {
+    void use() {
+        System.out.println(MyAnnotation.CONST);
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>аннотации можно применять к:</p>
+                <ul>
+                    <li>классы, интерфейсы, enums, модули</li>
+                    <li>переменные (<code>static</code>, поля, local)</li>
+                    <li>методы, конструкторы</li>
+                    <li>параметры методов, конструкторов, лямбд</li>
+                    <li>cast выражения</li>
+                    <li>другие аннотации</li>
+                </ul>
+            </li>
+            <li>
+                <p>можно использовать запись параметра (атрибута) без его названия и указывать в аннотации только значение, если выполняются следующие условия:</p>
+                <ul>
+                    <li>аннотация содержит атрибут <code>value()</code> (может быть обязательным или опциональным)</li>
+                    <li>в аннотации не должно быть других обязательных атрибутов</li>
+                    <li>при использовании аннотации не должны указываться значения других атрибутов</li>
+                </ul>
+            </li>
+        </ul>
+        <pre><code class="language-java">@interface MyAnnotation {
+    int value();
+    String a() default &quot;&quot;;
+    boolean b() default false;
+}
+
+@MyAnnotation(14)
+class C {}
+</code></pre>
+        <ul>
+            <li>атрибут может быть массивом:</li>
+        </ul>
+        <pre><code class="language-java">@interface MyAnnotation {
+    int[] array();
+}
+
+@MyAnnotation(array = 5) class C {}
+@MyAnnotation(array = {6}) class D {}
+@MyAnnotation(array = {5, 6}) class E {}
+@MyAnnotation(array = {}) class F {}
+</code></pre>
+        <ul>
+            <li>применение аннотаций можно ограничить с помощью <code>@Target</code>, указывая различные значения в атрибуте <code>value()</code>:</li>
+        </ul>
+        <pre><code class="language-java">@Target({ElementType.METHOD, ElementType.FIELD})
+@interface MembersOnly {}
+
+class C {
+    @MembersOnly
+    int f;
+
+    @MembersOnly void m() {}
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>опция <code>ElementType.TYPE_USE</code> в <code>@Target</code> относится ко всему, где присутствует тип, в том числе: cast операции, создание через <code>new</code>, внутри объявлений типа. Исключение для методов: <code>void</code>.</p>
+            </li>
+            <li>
+                <p>с помощью аннотации <code>@Retention</code> (указывая различные <code>value</code>) можно регулировать жизнь аннотаций после компиляции. Варианты: <code>RetentionPolicy.SOURCE</code>, <code>RetentionPolicy.CLASS</code>, <code>RetentionPolicy.RUNTIME</code>.</p>
+            </li>
+            <li>
+                <p>аннотация <code>@Documented</code>, применяемая к аннотациям, включает в Javadoc информацию об аннотациях, применяемых к типам.</p>
+            </li>
+            <li>
+                <p>маркер-аннотация <code>@Inherited</code>, примененная к классу, заставляет наследников наследовать аннотацию. В данном примере к классу <code>B</code> будет также применена аннотация <code>MyAnnotation</code>:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">@Inherited
+@interface MyAnnotation {}
+
+@MyAnnotation
+class A {}
+
+class B extends A {}
+</code></pre>
+        <ul>
+            <li>маркер-аннотация <code>@Repeatable</code> позволяет применять аннотацию несколько раз. Настраивается с помощью двух аннотаций:</li>
+        </ul>
+        <pre><code class="language-java">@interface MyAnnotations {
+    MyAnnotation[] value();
+}
+
+@Repeatable(MyAnnotations.class)
+@interface MyAnnotation {
+    int a();
+    int b();
+}
+
+@MyAnnotation(a = 3, b = 7)
+@MyAnnotation(a = 4, b = 9)
+class A {}
+</code></pre>
+        <ul>
+            <li>
+                <p>если <code>@Target</code> не указан, то аннотация применяется ко всему, кроме <code>TYPE_USE</code> и <code>TYPE_PARAMETER</code> (cast операции, создание объектов, generic объявления и т.п.). Если не указан <code>@Retention</code>, то по умолчанию - <code>RetentionPolicy.CLASS</code>.</p>
+            </li>
+            <li>
+                <p>аннотация <code>@Deprecated</code> поддерживает 2 необязательных значения: <code>String since()</code> и <code>boolean forRemoval()</code>. Пример использования <code>@Deprecated</code> и javadoc:</p>
+            </li>
+        </ul>
+        <pre><code class="language-java">class C {
+    /**
+     * Method to print sth.
+     * @deprecated Use newM() instead.
+     */
+    @Deprecated(since = &quot;1.5&quot;, forRemoval = true)
+    void oldM() {
+        System.out.println(&quot;old&quot;);
+    }
+
+    void newM() {
+        System.out.println(&quot;new&quot;);
+    }
+}
+</code></pre>
+        <ul>
+            <li>
+                <p>аннотация <code>@SupressWarnings</code> позволяет игнорировать предупреждения компилятора. При значении <code>deprecation</code> игнорируются предупреждения, связанные с аннотацией <code>@Deprecated</code>. При значении <code>unchecked</code> игнорируются предупреждения, связанные с raw types.</p>
+            </li>
+            <li>
+                <p>аннотация <code>@SafeVarargs</code> может применяться только к непереопределяемым (<code>private</code>, <code>static</code> или <code>final</code>) методам, содержащим varargs параметр.</p>
+            </li>
+        </ul>
+
+    </main>
+
+    <footer>
+        <div>Page load time is <span id="page-load-time">###</span> seconds</div>
+        <br/>
+        2022-2022 &copy; by mullerdaniil
+    </footer>
+</div>
+
+<script src="scripts/set-active-links.js"></script>
+</body>
+</html>
