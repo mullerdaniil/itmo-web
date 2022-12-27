@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/text.css">
     <link rel="stylesheet" href="styles/images.css">
     <link rel="stylesheet" href="styles/tables.css">
+    <link rel="stylesheet" href="styles/loading-animation.css">
     <script src="scripts/page-load-time.js"></script>
 </head>
 
@@ -21,10 +22,7 @@
     </header>
 
     <main class="content">
-        <h1 class="content__header">Articles</h1>
-        <section class="content__section">
-            <h1 class="content__section__header">Пусто</h1>
-        </section>
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     </main>
 
     <footer>
@@ -32,5 +30,6 @@
 </div>
 
 <script src="scripts/set-active-links.js"></script>
+<script src="scripts/fetch-posts.js"></script>
 </body>
 </html>
