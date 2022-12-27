@@ -31,8 +31,8 @@ function loadHeader() {
             <ul class="header__menu__list">
                 <li class="header__menu__item full-text"><a href="index.html">🏠 Домой</a></li>
                 <li class="header__menu__item short-text"><a href="index.html">🏠</a></li>
-                <li class="header__menu__item full-text"><a href="articles.html">📰 Статьи</a></li>
-                <li class="header__menu__item short-text"><a href="articles.html">📰</a></li>
+                <li class="header__menu__item full-text"><a href="posts.html">📰 Посты</a></li>
+                <li class="header__menu__item short-text"><a href="posts.html">📰</a></li>
                 <li class="header__menu__item full-text"><a href="contacts.html">☎ Контакты</a></li>
                 <li class="header__menu__item short-text"><a href="contacts.html">☎</a></li>
                 <li class="header__menu__item full-text"><a href="notes.html">📃 Notes</a></li>

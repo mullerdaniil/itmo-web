@@ -1,6 +1,6 @@
 const menuItems = [
     'index.html',
-    'articles.html',
+    'posts.html',
     'contacts.html',
     'notes.html'
 ];
