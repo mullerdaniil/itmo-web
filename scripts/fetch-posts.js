@@ -14,10 +14,10 @@ async function renderPosts() {
         contentElement.innerHTML = '<h1 class="content__header">Посты</h1>';
         const posts = await fetchPosts();
         posts.forEach(post => contentElement.innerHTML += `
-                <section class="content__section">
+                <div class="content__section">
                     <h1 class="content__section__header">${post.title}</h1>
                     <p>${post.body}</p>
-                </section>
+                </div>
         `);
     } catch (e) {
         contentElement.innerHTML = `<h1 class="content__section__header">⚠️Что-то пошло не так.</h1>`;
